@@ -7,47 +7,31 @@ class JourneyPhaseModel {
   }
 
   insertJourneyPhase(itemData) {
-    return db.execute(
-      "INSERT INTO journeyphase (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        itemData.journeyMap_id ?? null,
-        itemData.linePos ?? null,
-        itemData.posX ?? null,
-        itemData.length ?? null,
-        itemData.description ?? '',
-        itemData.emojiTag ?? ''
-      ]
-    ).then(([result]) => {
-      this.lastId = result.insertId;
-      return result.affectedRows > 0;
-    }).catch(error => { throw error; });
+    return db.execute("INSERT INTO journeyphase (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)", [itemData.journeyMap_id, itemData.linePos, itemData.posX, itemData.length, itemData.description, itemData.emojiTag])
+      .then(() => {
+        return this.getLastInsertedId();
+      }).catch(error => { throw error; });
   }
 
   getLastInsertedId() {
-    return Promise.resolve(this.lastId);
+    return db.query("SELECT LAST_INSERT_ID() as lastId")
+      .then(([rows]) => {
+        return rows[0].lastId;
+      }).catch(error => { throw error; });
   }
 
   updateJourneyPhase(itemData) {
-    return db.execute(
-      "UPDATE journeyphase SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE journeyPhase_id = ?",
-      [
-        itemData.linePos ?? null,
-        itemData.posX ?? null,
-        itemData.length ?? null,
-        itemData.description ?? '',
-        itemData.emojiTag ?? '',
-        itemData.journeyPhase_id ?? null
-      ]
-    ).then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+    return db.execute("UPDATE journeyphase SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE journeyPhase_id = ?", [itemData.linePos, itemData.posX, itemData.length, itemData.description, itemData.emojiTag, itemData.journeyPhase_id])
+      .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 
   deleteJourneyPhase(itemId) {
-    return db.execute("DELETE FROM journeyphase WHERE journeyPhase_id = ?", [itemId ?? null])
+    return db.execute("DELETE FROM journeyphase WHERE journeyPhase_id = ?", [itemId])
       .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 
   deleteByJourneyMapId(journeyMapId) {
-    return db.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeyMapId ?? null])
+    return db.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeyMapId])
       .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 }
