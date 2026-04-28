@@ -9,7 +9,14 @@ class JourneyPhaseModel {
   insertJourneyPhase(itemData) {
     return db.execute(
       "INSERT INTO journeyphase (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)",
-      [itemData.journeyMap_id, itemData.linePos, itemData.posX, itemData.length, itemData.description, itemData.emojiTag]
+      [
+        itemData.journeyMap_id ?? null,
+        itemData.linePos ?? null,
+        itemData.posX ?? null,
+        itemData.length ?? null,
+        itemData.description ?? '',
+        itemData.emojiTag ?? ''
+      ]
     ).then(([result]) => {
       this.lastId = result.insertId;
       return result.affectedRows > 0;
@@ -23,17 +30,24 @@ class JourneyPhaseModel {
   updateJourneyPhase(itemData) {
     return db.execute(
       "UPDATE journeyphase SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE journeyPhase_id = ?",
-      [itemData.linePos, itemData.posX, itemData.length, itemData.description, itemData.emojiTag, itemData.journeyPhase_id]
+      [
+        itemData.linePos ?? null,
+        itemData.posX ?? null,
+        itemData.length ?? null,
+        itemData.description ?? '',
+        itemData.emojiTag ?? '',
+        itemData.journeyPhase_id ?? null
+      ]
     ).then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 
   deleteJourneyPhase(itemId) {
-    return db.execute("DELETE FROM journeyphase WHERE journeyPhase_id = ?", [itemId])
+    return db.execute("DELETE FROM journeyphase WHERE journeyPhase_id = ?", [itemId ?? null])
       .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 
   deleteByJourneyMapId(journeyMapId) {
-    return db.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeyMapId])
+    return db.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeyMapId ?? null])
       .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 }
