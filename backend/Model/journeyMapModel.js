@@ -1,9 +1,9 @@
-// journeyMapModel.js
+// backend/Model/journeyMapModel.js
 const db = require('./db');
 
 class JourneyMapModel {
   createNewMap(userId, mapName) {
-    return db.execute("INSERT INTO journeyMap (map_name, user_id) VALUES (?, ?)", [mapName, userId])
+    return db.execute("INSERT INTO journeymap (map_name, user_id) VALUES (?, ?)", [mapName, userId])
       .then(() => {
         return this.getLastInsertedMap(userId);
       })
@@ -14,10 +14,10 @@ class JourneyMapModel {
   }
 
   getLastInsertedMap(userId) {
-    return db.query("SELECT journeyMap_id, map_name FROM journeyMap WHERE user_id = ? ORDER BY journeyMap_id DESC LIMIT 1", [userId])
+    return db.query("SELECT journeymap_id, map_name FROM journeymap WHERE user_id = ? ORDER BY journeymap_id DESC LIMIT 1", [userId])
       .then(([rows]) => {
         if (rows.length > 0) {
-          return { id: rows[0].journeyMap_id, name: rows[0].map_name };
+          return { id: rows[0].journeymap_id, name: rows[0].map_name };
         } else {
           return null;
         }
@@ -29,9 +29,9 @@ class JourneyMapModel {
   }
 
   getUserMaps(userId) {
-    return db.query("SELECT journeyMap_id, map_name FROM journeyMap WHERE user_id = ?", [userId])
+    return db.query("SELECT journeymap_id, map_name FROM journeymap WHERE user_id = ?", [userId])
       .then(([rows]) => {
-        const maps = rows.map(row => ({ id: row.journeyMap_id, name: row.map_name }));
+        const maps = rows.map(row => ({ id: row.journeymap_id, name: row.map_name }));
         return maps;
       })
       .catch((error) => {
@@ -40,9 +40,9 @@ class JourneyMapModel {
       });
   }
 
-  async updateMapName(journeyMapId, newName) {
+  async updateMapName(journeymapId, newName) {
     try {
-      const result = await db.execute("UPDATE journeyMap SET map_name = ? WHERE journeyMap_id = ?", [newName, journeyMapId]);
+      const result = await db.execute("UPDATE journeymap SET map_name = ? WHERE journeymap_id = ?", [newName, journeymapId]);
       return result.affectedRows > 0;
     } catch (error) {
       console.error("Error updating map name:", error);
@@ -50,18 +50,33 @@ class JourneyMapModel {
     }
   }
 
-  async deleteMap(journeyMapId) {
+  async deleteMap(journeymapId) {
+    const connection = await db.getConnection(); 
     try {
-      const result = await db.execute("DELETE FROM journeyMap WHERE journeyMap_id = ?", [journeyMapId]);
+      await connection.beginTransaction();
+
+      await connection.execute("DELETE FROM contactpoint WHERE journeyMap_id = ?", [journeymapId]);
+      await connection.execute("DELETE FROM emotion WHERE journeyMap_id = ?", [journeymapId]);
+      await connection.execute("DELETE FROM thought WHERE journeyMap_id = ?", [journeymapId]);
+      await connection.execute("DELETE FROM useraction WHERE journeyMap_id = ?", [journeymapId]);
+      await connection.execute("DELETE FROM scenario WHERE journeyMap_id = ?", [journeymapId]);
+      await connection.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeymapId]);
+      
+      const [result] = await connection.execute("DELETE FROM journeymap WHERE journeyMap_id = ?", [journeymapId]);
+
+      await connection.commit();
       return result.affectedRows > 0;
     } catch (error) {
+      await connection.rollback();
       console.error("Error deleting user maps:", error);
       throw error;
+    } finally {
+      connection.release();
     }
   }
 
-  getMapOwner(journeyMapId) {
-    return db.query("SELECT user_id as uid FROM journeyMap WHERE journeyMap_id = ?", [journeyMapId])
+  getMapOwner(journeymapId) {
+    return db.query("SELECT user_id as uid FROM journeymap WHERE journeymap_id = ?", [journeymapId])
       .then(([rows]) => {
         if (rows.length > 0) {
           return { uid: rows[0].uid };
