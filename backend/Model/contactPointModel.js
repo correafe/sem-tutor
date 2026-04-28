@@ -6,49 +6,47 @@ class ContactPointModel {
       .then(([rows]) => rows).catch(error => { throw error; });
   }
 
-  insertContactPoint(itemData) {
+  insertContactPoint(data) {
+    const posX = data.posX !== undefined ? data.posX : 0;
+    const journeyMap_id = data.journeyMap_id !== undefined ? data.journeyMap_id : null;
+    const linePos = data.linePos !== undefined ? data.linePos : 0;
+    const length = data.length !== undefined ? data.length : (data.width !== undefined ? data.width : 0);
+    const description = data.description || '';
+    const emojiTag = data.emojiTag || '';
+
     return db.execute(
       "INSERT INTO contactpoint (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        itemData.journeyMap_id ?? null,
-        itemData.linePos ?? null,
-        itemData.posX ?? null,
-        itemData.length ?? null,
-        itemData.description ?? '',
-        itemData.emojiTag ?? ''
-      ]
+      [journeyMap_id, linePos, posX, length, description, emojiTag]
     ).then(([result]) => {
       this.lastId = result.insertId;
-      return result.affectedRows > 0;
-    }).catch(error => { throw error; });
+      return true;
+    }).catch(error => { console.error(error); throw error; });
   }
 
   getLastInsertedId() {
     return Promise.resolve(this.lastId);
   }
 
-  updateContactPoint(itemData) {
+  updateContactPoint(data) {
+    const id = data.contactPoint_id || data.id;
+    const posX = data.posX !== undefined ? data.posX : 0;
+    const length = data.length !== undefined ? data.length : (data.width !== undefined ? data.width : 0);
+    const description = data.description || '';
+
     return db.execute(
-      "UPDATE contactpoint SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE contactPoint_id = ?",
-      [
-        itemData.linePos ?? null,
-        itemData.posX ?? null,
-        itemData.length ?? null,
-        itemData.description ?? '',
-        itemData.emojiTag ?? '',
-        itemData.contactPoint_id ?? null
-      ]
-    ).then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+      "UPDATE contactpoint SET posX = ?, description = ?, length = ? WHERE contactPoint_id = ?",
+      [posX, description, length, id]
+    ).then(() => true).catch(error => { console.error(error); throw error; });
   }
 
-  deleteContactPoint(itemId) {
-    return db.execute("DELETE FROM contactpoint WHERE contactPoint_id = ?", [itemId ?? null])
-      .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+  deleteContactPoint(id) {
+    return db.execute("DELETE FROM contactpoint WHERE contactPoint_id = ?", [id])
+      .then(() => true).catch(error => { throw error; });
   }
 
   deleteByJourneyMapId(journeyMapId) {
-    return db.execute("DELETE FROM contactpoint WHERE journeyMap_id = ?", [journeyMapId ?? null])
-      .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+    return db.execute("DELETE FROM contactpoint WHERE journeyMap_id = ?", [journeyMapId])
+      .then(() => true).catch(error => { throw error; });
   }
 }
 

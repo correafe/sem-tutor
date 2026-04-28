@@ -6,49 +6,47 @@ class JourneyPhaseModel {
       .then(([rows]) => rows).catch(error => { throw error; });
   }
 
-  insertJourneyPhase(itemData) {
+  insertJourneyPhase(data) {
+    const posX = data.posX !== undefined ? data.posX : 0;
+    const journeyMap_id = data.journeyMap_id !== undefined ? data.journeyMap_id : null;
+    const linePos = data.linePos !== undefined ? data.linePos : 0;
+    const length = data.length !== undefined ? data.length : (data.width !== undefined ? data.width : 0);
+    const description = data.description || '';
+    const emojiTag = data.emojiTag || '';
+
     return db.execute(
       "INSERT INTO journeyphase (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        itemData.journeyMap_id ?? null,
-        itemData.linePos ?? null,
-        itemData.posX ?? null,
-        itemData.length ?? null,
-        itemData.description ?? '',
-        itemData.emojiTag ?? ''
-      ]
+      [journeyMap_id, linePos, posX, length, description, emojiTag]
     ).then(([result]) => {
       this.lastId = result.insertId;
-      return result.affectedRows > 0;
-    }).catch(error => { throw error; });
+      return true;
+    }).catch(error => { console.error(error); throw error; });
   }
 
   getLastInsertedId() {
     return Promise.resolve(this.lastId);
   }
 
-  updateJourneyPhase(itemData) {
+  updateJourneyPhase(data) {
+    const id = data.journeyPhase_id || data.id;
+    const posX = data.posX !== undefined ? data.posX : 0;
+    const length = data.length !== undefined ? data.length : (data.width !== undefined ? data.width : 0);
+    const description = data.description || '';
+
     return db.execute(
-      "UPDATE journeyphase SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE journeyPhase_id = ?",
-      [
-        itemData.linePos ?? null,
-        itemData.posX ?? null,
-        itemData.length ?? null,
-        itemData.description ?? '',
-        itemData.emojiTag ?? '',
-        itemData.journeyPhase_id ?? null
-      ]
-    ).then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+      "UPDATE journeyphase SET posX = ?, description = ?, length = ? WHERE journeyPhase_id = ?",
+      [posX, description, length, id]
+    ).then(() => true).catch(error => { console.error(error); throw error; });
   }
 
-  deleteJourneyPhase(itemId) {
-    return db.execute("DELETE FROM journeyphase WHERE journeyPhase_id = ?", [itemId ?? null])
-      .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+  deleteJourneyPhase(id) {
+    return db.execute("DELETE FROM journeyphase WHERE journeyPhase_id = ?", [id])
+      .then(() => true).catch(error => { throw error; });
   }
 
   deleteByJourneyMapId(journeyMapId) {
-    return db.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeyMapId ?? null])
-      .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+    return db.execute("DELETE FROM journeyphase WHERE journeyMap_id = ?", [journeyMapId])
+      .then(() => true).catch(error => { throw error; });
   }
 }
 
