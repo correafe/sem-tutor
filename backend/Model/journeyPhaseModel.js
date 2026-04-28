@@ -218,4 +218,4 @@ class JourneyPhaseModel {
   }
 }
 
-module.exports = new JourneyPhaseModel();
+module.exports = JourneyPhaseModel;

@@ -116,4 +116,4 @@ class ContactPointModel {
   }
 }
 
-module.exports = new ContactPointModel();
+module.exports = ContactPointModel;

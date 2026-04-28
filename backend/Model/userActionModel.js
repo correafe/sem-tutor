@@ -115,4 +115,4 @@ class UserActionModel {
   }
 }
 
-module.exports = new UserActionModel();
+module.exports = UserActionModel;
