@@ -7,31 +7,47 @@ class UserActionModel {
   }
 
   insertUserAction(itemData) {
-    return db.execute("INSERT INTO useraction (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)", [itemData.journeyMap_id, itemData.linePos, itemData.posX, itemData.length, itemData.description, itemData.emojiTag])
-      .then(() => {
-        return this.getLastInsertedId();
-      }).catch(error => { throw error; });
+    return db.execute(
+      "INSERT INTO useraction (journeyMap_id, linePos, posX, length, description, emojiTag) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        itemData.journeyMap_id ?? null,
+        itemData.linePos ?? null,
+        itemData.posX ?? null,
+        itemData.length ?? null,
+        itemData.description ?? '',
+        itemData.emojiTag ?? ''
+      ]
+    ).then(([result]) => {
+      this.lastId = result.insertId;
+      return result.affectedRows > 0;
+    }).catch(error => { throw error; });
   }
 
   getLastInsertedId() {
-    return db.query("SELECT LAST_INSERT_ID() as lastId")
-      .then(([rows]) => {
-        return rows[0].lastId;
-      }).catch(error => { throw error; });
+    return Promise.resolve(this.lastId);
   }
 
   updateUserAction(itemData) {
-    return db.execute("UPDATE useraction SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE userAction_id = ?", [itemData.linePos, itemData.posX, itemData.length, itemData.description, itemData.emojiTag, itemData.userAction_id])
-      .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
+    return db.execute(
+      "UPDATE useraction SET linePos = ?, posX = ?, length = ?, description = ?, emojiTag = ? WHERE userAction_id = ?",
+      [
+        itemData.linePos ?? null,
+        itemData.posX ?? null,
+        itemData.length ?? null,
+        itemData.description ?? '',
+        itemData.emojiTag ?? '',
+        itemData.userAction_id ?? null
+      ]
+    ).then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 
   deleteUserAction(itemId) {
-    return db.execute("DELETE FROM useraction WHERE userAction_id = ?", [itemId])
+    return db.execute("DELETE FROM useraction WHERE userAction_id = ?", [itemId ?? null])
       .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 
   deleteUserActionsByJourneyMapId(journeyMapId) {
-    return db.execute("DELETE FROM useraction WHERE journeyMap_id = ?", [journeyMapId])
+    return db.execute("DELETE FROM useraction WHERE journeyMap_id = ?", [journeyMapId ?? null])
       .then(([result]) => result.affectedRows > 0).catch(error => { throw error; });
   }
 }
