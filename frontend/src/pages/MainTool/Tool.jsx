@@ -40,6 +40,38 @@ const Tool = ({ }) => {
 
   const [loading, setLoading] = useState(false);
 
+  // 1. Estados para controlar o zoom e a posição da câmera no mapa
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  // 2. Lógica para dar zoom com a rodinha do mouse perfeitamente onde o cursor está
+  const handleWheel = (e) => {
+    e.evt.preventDefault();
+    const scaleBy = 1.1; // Intensidade do zoom
+    const stage = e.target.getStage();
+    const oldScale = stage.scaleX();
+    const pointer = stage.getPointerPosition();
+
+    // Descobre onde o mouse está em relação ao mapa inteiro
+    const mousePointTo = {
+      x: (pointer.x - stage.x()) / oldScale,
+      y: (pointer.y - stage.y()) / oldScale,
+    };
+
+    // Aumenta ou diminui dependendo da direção da rodinha
+    const newScale = e.evt.deltaY > 0 ? oldScale / scaleBy : oldScale * scaleBy;
+    
+    setScale(newScale);
+    setPosition({
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    });
+  };
+
+  // 3. (Opcional) Funções caso queira botões de + e - na tela
+  const handleZoomIn = () => setScale(scale * 1.2);
+  const handleZoomOut = () => setScale(scale / 1.2);
+
   const handleExport = async () => {
     setLoading(true);
     // console.log("entrou em handleExport");
@@ -1198,7 +1230,19 @@ const Tool = ({ }) => {
           )}
           {dataLoaded && (
             <div className="stage-container">
-              <Stage width={calculateTotalWidth(matrix) + 1260} height={window.innerHeight} ref={stageRef}>
+              <Stage width={calculateTotalWidth(matrix) + 1260} height={window.innerHeight} ref={stageRef}  draggable={true} // Permite arrastar o mapa (panning)
+   onWheel={handleWheel} // Ativa o zoom do mouse
+   scaleX={scale} 
+   scaleY={scale} 
+   x={position.x} 
+   y={position.y}
+   onDragEnd={(e) => {
+      // Quando arrastar O MAPA INTEIRO, salva a nova posição.
+      // A condição impede que arraste um cartão e o mapa ache que ele próprio moveu
+      if (e.target === e.target.getStage()) {
+         setPosition({ x: e.target.x(), y: e.target.y() });
+      }
+   }}>
                 <Layer>
                   <Matrix
                     key={forceUpdate}
