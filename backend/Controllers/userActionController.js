@@ -3,7 +3,7 @@ const UserActionModel = require('../Model/userActionModel');
 const userActionController = {
   getAllItems: async (req, res) => {
     try {
-      const journeyMapId = req.query.journeyMap_id; // Extrair o journeyMap_id dos parâmetros de consulta
+      const journeyMapId = req.query.journeyMap_id;
       if (!journeyMapId) {
         return res.status(400).json({ error: 'Parâmetro journeyMap_id ausente na solicitação' });
       }
@@ -23,6 +23,7 @@ const userActionController = {
       if (postData && postData.posX !== undefined && postData.journeyMap_id 
       !== undefined && postData.linePos !== undefined && postData.length !== undefined && 
       postData.description !== undefined && postData.emojiTag !== undefined) {
+        
         const userActionModel = new UserActionModel();
         const success = await userActionModel.insertUserAction(postData);
 
@@ -64,7 +65,7 @@ const userActionController = {
 
   deleteItem: async (req, res) => {
     try {
-      const userActionId = req.params.userActionId; // Pega o id diretamente da URL
+      const userActionId = req.params.userActionId;
       const userActionModel = new UserActionModel();
       const success = await userActionModel.deleteUserAction(userActionId);
   

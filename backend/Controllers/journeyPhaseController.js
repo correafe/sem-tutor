@@ -3,7 +3,7 @@ const JourneyPhaseModel = require('../Model/journeyPhaseModel');
 const journeyPhaseController = {
   getAllItems: async (req, res) => {
     try {
-      const journeyMapId = req.query.journeyMap_id; // Extrair o journeyMap_id dos parâmetros de consulta
+      const journeyMapId = req.query.journeyMap_id;
       if (!journeyMapId) {
         return res.status(400).json({ error: 'Parâmetro journeyMap_id ausente na solicitação' });
       }
@@ -23,6 +23,7 @@ const journeyPhaseController = {
       if (postData && postData.posX !== undefined && postData.journeyMap_id
         !== undefined && postData.linePos !== undefined && postData.length !== undefined &&
         postData.description !== undefined && postData.emojiTag !== undefined) {
+        
         const journeyPhaseModel = new JourneyPhaseModel();
         const success = await journeyPhaseModel.insertJourneyPhase(postData);
 
@@ -64,7 +65,7 @@ const journeyPhaseController = {
 
   deleteItem: async (req, res) => {
     try {
-      const journeyPhaseId = req.params.journeyPhaseId; // Pega o id diretamente da URL
+      const journeyPhaseId = req.params.journeyPhaseId;
       const journeyPhaseModel = new JourneyPhaseModel();
       const success = await journeyPhaseModel.deleteJourneyPhase(journeyPhaseId);
 
