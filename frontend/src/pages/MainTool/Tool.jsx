@@ -38,7 +38,7 @@ const Tool = ({ }) => {
   useEffect(() => {
     const ajustarZoom = () => {
       // 950px é a altura necessária para as 5 linhas do mapa caberem perfeitamente
-      const proporcao = window.innerHeight / 1050;
+      const proporcao = window.innerHeight / 950;
       setZoomRatio(proporcao);
     };
     ajustarZoom();
@@ -1043,7 +1043,8 @@ const Tool = ({ }) => {
             currentJourneyMap={id_mapa}
           />
 
-          <div className="separator1" style={{ marginTop: "61.9px", width: calculateTotalWidth(matrix) + 2400 }}></div>
+          <div style={{ height: "61.9px", width: "100%" }}></div>
+          <div className="separator1" style={{ width: calculateTotalWidth(matrix) + 2400 }}></div>
           <Popup trigger={buttonPopup} setTrigger={setButtonPopup} setTextEdit={setTextEdit} setScenario={setScenario} style={{ borderRadius: "25px", padding: "20px", backgroundColor: "#f9f9f9", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
             {textEdit ? (
               <>
@@ -1210,7 +1211,7 @@ const Tool = ({ }) => {
             </Popup>
           )}
           {dataLoaded && (
-            <div className="stage-container" style={{ position: 'absolute', top: 0, left: 0, marginTop: '28px', marginLeft: '160px', zIndex: 1 }}>
+            <div className="stage-container">
               <Stage width={calculateTotalWidth(matrix) + 1260} height={1000} ref={stageRef}>
                 <Layer>
                   <Matrix
