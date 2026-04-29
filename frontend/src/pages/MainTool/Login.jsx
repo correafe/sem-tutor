@@ -102,16 +102,17 @@ function Login() {
 
 
   return (
-    <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
-      {/* DIV NOVA: O zoom vai apenas no conteúdo, não no fundo! */}
+    <div className={`container ${theme}`}>
+      {/* DIV DO ZOOM: Envolve apenas as caixas do formulário */}
       <div style={{ zoom: zoomRatio }}>
-      <div className={`container-login ${theme}`}>
-        <div className={`wrap-login ${theme}`}>
-          <button onClick={toggleTheme} className="toggle-theme-btn">
-            {theme === "dark" ? <Moon /> : <Sun />}
-          </button>
-          <form className="login-form">
-            <span className={`login-form-title ${theme}`}> Login </span>
+        <div className={`container-login ${theme}`}>
+          <div className={`wrap-login ${theme}`}>
+            <button onClick={toggleTheme} className="toggle-theme-btn">
+              {theme === "dark" ? <Moon /> : <Sun />}
+            </button>
+            <form className="login-form">
+              <span className={`login-form-title ${theme}`}> Login </span>
+              {/* O restante do seu código continua normal abaixo... */}
 
             <span className={`login-form-title ${theme}`}>
               <img src={img} alt="Mascote" />
