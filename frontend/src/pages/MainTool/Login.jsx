@@ -19,6 +19,18 @@ function Login() {
   const [googleUser, setGoogleUser] = useState(null);
   const [theme, setTheme] = useState("light");
 
+  const [zoomRatio, setZoomRatio] = useState(1);
+
+  useEffect(() => {
+    const ajustarZoom = () => {
+      const proporcao = window.innerHeight / 950; // Ajuste se necessário
+      setZoomRatio(proporcao);
+    };
+    ajustarZoom();
+    window.addEventListener('resize', ajustarZoom);
+    return () => window.removeEventListener('resize', ajustarZoom);
+  }, []);
+
   // useEffect(() => {
   //   // console.log("Current theme:", theme);
   // }, [theme]);
@@ -85,8 +97,10 @@ function Login() {
     }
   };
 
+
+
   return (
-    <div className={`container ${theme}`}>
+    <div className={`container ${theme}`} style={{ zoom: zoomRatio }}>
       <div className={`container-login ${theme}`}>
         <div className={`wrap-login ${theme}`}>
           <button onClick={toggleTheme} className="toggle-theme-btn">
