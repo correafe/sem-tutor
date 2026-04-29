@@ -33,6 +33,19 @@ const Tool = ({ }) => {
   const navigate = useNavigate();
   const { id_mapa } = useParams();
 
+  const [zoomRatio, setZoomRatio] = useState(1);
+
+  useEffect(() => {
+    const ajustarZoom = () => {
+      // 950px é a altura necessária para as 5 linhas do mapa caberem perfeitamente
+      const proporcao = window.innerHeight / 950;
+      setZoomRatio(proporcao);
+    };
+    ajustarZoom();
+    window.addEventListener('resize', ajustarZoom);
+    return () => window.removeEventListener('resize', ajustarZoom);
+  }, []);
+
   const width = window.innerWidth;
   const height = window.innerHeight;
 
@@ -1011,7 +1024,7 @@ const Tool = ({ }) => {
 
   return (
     <div className="scrollable-container">
-      <div style={{ width: "100vw", height: "100vh" }}>
+      <div style={{ zoom: zoomRatio, minWidth: "100vw", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
         <>
           {loading && (
             <div className="loading-overlay">

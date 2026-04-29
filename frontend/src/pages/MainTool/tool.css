@@ -4,10 +4,15 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #E6E6E6;
-  max-height: 100vh;
-  /* overflow-y: hidden; */
-  overflow-y: hidden;
-  min-zoom: 70%;
+  height: 100vh;
+  overflow: hidden; /* Trava a rolagem vertical da página toda */
+}
+
+.scrollable-container {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: auto; /* Permite rolar para os lados */
+  overflow-y: hidden; /* Impede a rolagem dupla vertical */
 }
   
 .content {
