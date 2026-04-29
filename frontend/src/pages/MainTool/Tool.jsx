@@ -38,7 +38,7 @@ const Tool = ({ }) => {
   useEffect(() => {
     const ajustarZoom = () => {
       // 950px é a altura necessária para as 5 linhas do mapa caberem perfeitamente
-      const proporcao = window.innerHeight / 950;
+      const proporcao = window.innerHeight / 1050;
       setZoomRatio(proporcao);
     };
     ajustarZoom();
@@ -1210,7 +1210,7 @@ const Tool = ({ }) => {
             </Popup>
           )}
           {dataLoaded && (
-            <div className="stage-container">
+            <div className="stage-container" style={{ position: 'absolute', top: 0, left: 0, marginTop: '28px', marginLeft: '160px', zIndex: 1 }}>
               <Stage width={calculateTotalWidth(matrix) + 1260} height={1000} ref={stageRef}>
                 <Layer>
                   <Matrix
