@@ -23,8 +23,10 @@ function Login() {
 
   useEffect(() => {
     const ajustarZoom = () => {
-      const proporcao = window.innerHeight / 950; // Ajuste se necessário
-      setZoomRatio(proporcao);
+      const proporcao = window.innerHeight / 950;
+      // Garante que o zoom nunca seja maior que 1 (100%).
+      // Ou seja, só encolhe em telas pequenas, mas não aumenta em telas grandes!
+      setZoomRatio(proporcao < 1 ? proporcao : 1);
     };
     ajustarZoom();
     window.addEventListener('resize', ajustarZoom);
@@ -100,7 +102,9 @@ function Login() {
 
 
   return (
-    <div className={`container ${theme}`} style={{ zoom: zoomRatio }}>
+    <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
+      {/* DIV NOVA: O zoom vai apenas no conteúdo, não no fundo! */}
+      <div style={{ zoom: zoomRatio }}>
       <div className={`container-login ${theme}`}>
         <div className={`wrap-login ${theme}`}>
           <button onClick={toggleTheme} className="toggle-theme-btn">
@@ -176,6 +180,7 @@ function Login() {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }
