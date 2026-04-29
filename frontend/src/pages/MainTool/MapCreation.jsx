@@ -35,8 +35,10 @@ const MapCreation = () => {
 
   useEffect(() => {
     const ajustarZoom = () => {
-      const proporcao = window.innerHeight / 950; // Altere este 950 se achar que ficou muito pequeno
-      setZoomRatio(proporcao);
+      const proporcao = window.innerHeight / 950;
+      // Garante que o zoom nunca seja maior que 1 (100%).
+      // Ou seja, só encolhe em telas pequenas, mas não aumenta em telas grandes!
+      setZoomRatio(proporcao < 1 ? proporcao : 1);
     };
     ajustarZoom();
     window.addEventListener('resize', ajustarZoom);
@@ -215,7 +217,10 @@ const MapCreation = () => {
   }, [filterText]);
 
   return (
-    <div className="map-creation-container" style={{ zoom: zoomRatio, backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
+    <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
+      {/* DIV NOVA: O zoom vai apenas no conteúdo, não no fundo! */}
+      <div style={{ zoom: zoomRatio }}>
+      
       <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
         <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
         <p>JEM</p>
@@ -319,6 +324,7 @@ const MapCreation = () => {
           </div>
         </ModalName>
       )}
+    </div>
     </div>
   );
 };
