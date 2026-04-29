@@ -1211,7 +1211,7 @@ const Tool = ({ }) => {
           )}
           {dataLoaded && (
             <div className="stage-container">
-              <Stage width={calculateTotalWidth(matrix) + 1260} height={window.innerHeight} ref={stageRef}>
+              <Stage width={calculateTotalWidth(matrix) + 1260} height={1000} ref={stageRef}>
                 <Layer>
                   <Matrix
                     key={forceUpdate}
