@@ -225,7 +225,7 @@ const MapCreation = () => {
         <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
         <p>JEM</p>
         <div className="textoboas" style={{ flex: "1" }}>
-          <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
+          <h1 style={{ margin: "0", textAlign: "center" }}> Olá{usuario?.displayName ? ` ${usuario.displayName}` : ""}, seja muito bem-vindo(a)!</h1>
         </div>
         <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "20px" }} />
         <button className="botaologout" onClick={handleLogout}>

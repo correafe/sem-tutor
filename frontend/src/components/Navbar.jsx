@@ -72,6 +72,8 @@ const Navbar = ({ onSaveClick, onDownload, onMap, onInfoClick, onScenarioClick, 
         <button className="button logout" onClick={onLogoutClick}>
           <LogOut />
         </button>
+
+        
         <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ marginLeft: "20px", width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "10px" }} />
       </div>
     </div>

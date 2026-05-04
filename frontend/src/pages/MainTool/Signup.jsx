@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { auth } from '../../services/firebase'
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth'
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, updateProfile } from 'firebase/auth'
 import { toast } from 'sonner';
 import { Eye, EyeOff, Sun, Moon } from 'lucide-react';
 
@@ -10,6 +10,7 @@ import img from "../../assets/mascote.png";
 import "./Signup.css";
 
 function Signup() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -81,6 +82,13 @@ function Signup() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         //// console.log(userCredential);
         const user = userCredential.user;
+
+      await updateProfile(user, {
+          displayName: name
+        });
+
+        const userAtualizado = { ...user, displayName: name };
+        
         localStorage.setItem("token", user.accessToken);
         localStorage.setItem("user", JSON.stringify(user));
         setLoggedIn(true);
@@ -110,6 +118,16 @@ function Signup() {
             <span className={`login-form-title ${theme}`}>
               <img className="mascote" src={img} alt="Mascote" />
             </span>
+
+            <div className={`wrap-input ${theme}`}>
+              <input
+                className={name !== "" ? `has-val input ${theme}` : `input ${theme}`}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <span className={`focus-input ${theme}`} data-placeholder="Nome"></span>
+            </div>
 
             <div className={`wrap-input ${theme}`}>
               <input
