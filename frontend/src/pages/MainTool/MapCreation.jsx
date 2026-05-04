@@ -31,18 +31,21 @@ const MapCreation = () => {
 
   const mapsPerPage = 5; // Number of maps per page
 
-  const [zoomRatio, setZoomRatio] = useState(1);
+  const [scaleRatio, setScaleRatio] = useState(1);
 
   useEffect(() => {
-    const ajustarZoom = () => {
+    const ajustarEscala = () => {
+      // 950px é a altura perfeita para as linhas não cortarem
       const proporcao = window.innerHeight / 950;
-      // Garante que o zoom nunca seja maior que 1 (100%).
-      // Ou seja, só encolhe em telas pequenas, mas não aumenta em telas grandes!
-      setZoomRatio(proporcao < 1 ? proporcao : 1);
+      setScaleRatio(proporcao);
     };
-    ajustarZoom();
-    window.addEventListener('resize', ajustarZoom);
-    return () => window.removeEventListener('resize', ajustarZoom);
+    
+    ajustarEscala();
+    window.addEventListener('resize', ajustarEscala);
+    
+    return () => {
+      window.removeEventListener('resize', ajustarEscala);
+    };
   }, []);
 
   useEffect(() => {
@@ -217,107 +220,82 @@ const MapCreation = () => {
   }, [filterText]);
 
   return (
-    <>
-      {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />} 
-      
-      {isPickerVisible && (
-        <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
-          <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Criar Mapa de jornada</h1>
-          </div>
-          <input type="text" value={newMapName} onChange={handleMapNameChange} className="inputname" placeholder="Título do novo mapa" />
-          <div className="" style={{ margin: "0", textAlign: "center" }}>
-            <button className="botaosavename" onClick={() => { handleCreateNewMap(); handlePickerClose(); }} disabled={!newMapName.trim()}>Criar Novo Mapa</button>
-          </div>
-        </ModalName>
-      )}
-
-      {confirmDelete && (
-        <ModalName trigger={confirmDelete} setTrigger={setConfirmDelete}>
-          <div style={{ textAlign: "left", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <h1 style={{ fontSize: "40px", marginTop: "60px", marginBottom: "50px", justifyContent: "center" }}>Tem certeza que deseja excluir esse mapa?</h1>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button className="botaosavename" onClick={handleConfirmDelete}>Sim</button>
-            <button className="botaocancelname" onClick={handleCancelDelete}>Não</button>
-          </div>
-        </ModalName>
-      )}
-
-      {modalUpdate && (
-        <ModalName trigger={modalUpdate} setTrigger={setmodalUpdate}>
-          <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Atualizar título do mapa:</h1>
-          </div>
-          <input type="text" value={newMapNameUpdate} onChange={handleMapNameChangeUpdate} className="inputname" placeholder="Novo título do mapa" />
-          <div className="" style={{ margin: "0", textAlign: "center" }}>
-            <button className="botaosavename" onClick={() => { handleConfirmUpdate(); }} disabled={!newMapNameUpdate.trim()}>Salvar</button>
-          </div>
-        </ModalName>
-      )}
-
-      <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
-        <div style={{ zoom: zoomRatio }}>
-          
-          <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
-            <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
-            <p>JEM</p>
-            <div className="textoboas" style={{ flex: "1" }}>
-              <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
+    <div style={{
+      width: `${100 / scaleRatio}vw`,
+      height: `${100 / scaleRatio}vh`,
+      transform: `scale(${scaleRatio})`,
+      transformOrigin: "top left",
+      backgroundColor: "#E6E6E6",
+      overflow: "hidden"
+    }}>
+      <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, backgroundSize: "cover", backgroundPosition: "center", height: "100%", width: "100%" }}>
+        
+        {/* 🚨 MODAIS POR CIMA DE TUDO 🚨 */}
+        {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />} 
+        
+        {isPickerVisible && (
+          <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
+            <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
+              <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Criar Mapa de jornada</h1>
             </div>
-            <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "20px" }} />
-            <button className="botaologout" onClick={handleLogout}>
-              <LogOut />
-            </button>
-          </div>
-
-          {maps.length > 0 ? (
-            <div className="margem">
-              <div className="input-wrapper">
-                <h1 className="mapasuser">Mapas de Jornada do Usuário:</h1>
-                <input
-                  type="text"
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
-                  placeholder="Filtrar por nome..."
-                  className="input-filter"
-                />
-                <X className='x' onClick={handleClearInput} size={40} />
-              </div>
-              <div className="pad">
-                <div className="separar">
-                  <div className="blocoadd" onClick={handleClickModal}>
-                    <h4 className="icon"><Plus size={200} /></h4>
-                    <div className="bloconovo">
-                      <p>Novo mapa</p>
-                    </div>
-                  </div>
-                </div>
-                {currentMaps.map((map, index) => (
-                  <div key={map.id}>
-                    <div className="separar">
-                      <div className="bloco" style={{ backgroundColor: getColorAtIndex(index) }} onClick={() => handleSelectMap(map.id)} >
-                        <h4 className="texto">{truncateText(map.name)}</h4>
-                        <div className="divbotoes">
-                          <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleDeleteButtonClick(map.id); }}> <Trash className='icontrash' size={40} /> </button>
-                          <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleEditButtonClick(map.id); }}> <Pencil className='icontrash' size={40} /> </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="pagination">
-                <button className="buttonPage" onClick={handleFirstPage} disabled={currentPage === 1}> <ChevronsLeft/> </button>
-                <button className="buttonPage" onClick={handlePreviousPage} disabled={currentPage === 1}><ChevronLeft/></button>
-                <p className="pagePar" > Página {currentPage} de {totalPages} </p>
-                <button className="buttonPage" onClick={handleNextPage} disabled={currentPage === totalPages}><ChevronRight/></button>
-                <button className="buttonPage" onClick={handleLastPage} disabled={currentPage === totalPages}><ChevronsRight/></button>
-              </div>
+            <input type="text" value={newMapName} onChange={handleMapNameChange} className="inputname" placeholder="Título do novo mapa" />
+            <div className="" style={{ margin: "0", textAlign: "center" }}>
+              <button className="botaosavename" onClick={() => { handleCreateNewMap(); handlePickerClose(); }} disabled={!newMapName.trim()}>Criar Novo Mapa</button>
             </div>
-          ) : (
-            <div className="margem2" >
-              <p className="nenhum">Nenhum mapa encontrado.</p>
+          </ModalName>
+        )}
+
+        {confirmDelete && (
+          <ModalName trigger={confirmDelete} setTrigger={setConfirmDelete}>
+            <div style={{ textAlign: "left", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <h1 style={{ fontSize: "40px", marginTop: "60px", marginBottom: "50px", justifyContent: "center" }}>Tem certeza que deseja excluir esse mapa?</h1>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <button className="botaosavename" onClick={handleConfirmDelete}>Sim</button>
+              <button className="botaocancelname" onClick={handleCancelDelete}>Não</button>
+            </div>
+          </ModalName>
+        )}
+
+        {modalUpdate && (
+          <ModalName trigger={modalUpdate} setTrigger={setmodalUpdate}>
+            <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
+              <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Atualizar título do mapa:</h1>
+            </div>
+            <input type="text" value={newMapNameUpdate} onChange={handleMapNameChangeUpdate} className="inputname" placeholder="Novo título do mapa" />
+            <div className="" style={{ margin: "0", textAlign: "center" }}>
+              <button className="botaosavename" onClick={() => { handleConfirmUpdate(); }} disabled={!newMapNameUpdate.trim()}>Salvar</button>
+            </div>
+          </ModalName>
+        )}
+
+        {/* ⬇️ CONTEÚDO PRINCIPAL DA TELA DE MAPAS ⬇️ */}
+        <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
+          <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
+          <p>JEM</p>
+          <div className="textoboas" style={{ flex: "1" }}>
+            <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
+          </div>
+          <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "20px" }} />
+          <button className="botaologout" onClick={handleLogout}>
+            <LogOut />
+          </button>
+        </div>
+
+        {maps.length > 0 ? (
+          <div className="margem">
+            <div className="input-wrapper">
+              <h1 className="mapasuser">Mapas de Jornada do Usuário:</h1>
+              <input
+                type="text"
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                placeholder="Filtrar por nome..."
+                className="input-filter"
+              />
+              <X className='x' onClick={handleClearInput} size={40} />
+            </div>
+            <div className="pad">
               <div className="separar">
                 <div className="blocoadd" onClick={handleClickModal}>
                   <h4 className="icon"><Plus size={200} /></h4>
@@ -326,12 +304,44 @@ const MapCreation = () => {
                   </div>
                 </div>
               </div>
+              {currentMaps.map((map, index) => (
+                <div key={map.id}>
+                  <div className="separar">
+                    <div className="bloco" style={{ backgroundColor: getColorAtIndex(index) }} onClick={() => handleSelectMap(map.id)} >
+                      <h4 className="texto">{truncateText(map.name)}</h4>
+                      <div className="divbotoes">
+                        <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleDeleteButtonClick(map.id); }}> <Trash className='icontrash' size={40} /> </button>
+                        <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleEditButtonClick(map.id); }}> <Pencil className='icontrash' size={40} /> </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+            <div className="pagination">
+              <button className="buttonPage" onClick={handleFirstPage} disabled={currentPage === 1}> <ChevronsLeft/> </button>
+              <button className="buttonPage" onClick={handlePreviousPage} disabled={currentPage === 1}><ChevronLeft/></button>
+              <p className="pagePar" > Página {currentPage} de {totalPages} </p>
+              <button className="buttonPage" onClick={handleNextPage} disabled={currentPage === totalPages}><ChevronRight/></button>
+              <button className="buttonPage" onClick={handleLastPage} disabled={currentPage === totalPages}><ChevronsRight/></button>
+            </div>
+          </div>
+        ) : (
+          <div className="margem2" >
+            <p className="nenhum">Nenhum mapa encontrado.</p>
+            <div className="separar">
+              <div className="blocoadd" onClick={handleClickModal}>
+                <h4 className="icon"><Plus size={200} /></h4>
+                <div className="bloconovo">
+                  <p>Novo mapa</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
-        </div>
       </div>
-    </>
+    </div>
   );
 };
 

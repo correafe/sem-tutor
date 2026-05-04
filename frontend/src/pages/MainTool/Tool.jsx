@@ -33,17 +33,21 @@ const Tool = ({ }) => {
   const navigate = useNavigate();
   const { id_mapa } = useParams();
 
-  const [zoomRatio, setZoomRatio] = useState(1);
+  const [scaleRatio, setScaleRatio] = useState(1);
 
   useEffect(() => {
-    const ajustarZoom = () => {
-      // 950px é a altura necessária para as 5 linhas do mapa caberem perfeitamente
+    const ajustarEscala = () => {
+      // 950px é a altura perfeita para as linhas não cortarem
       const proporcao = window.innerHeight / 950;
-      setZoomRatio(proporcao);
+      setScaleRatio(proporcao);
     };
-    ajustarZoom();
-    window.addEventListener('resize', ajustarZoom);
-    return () => window.removeEventListener('resize', ajustarZoom);
+    
+    ajustarEscala();
+    window.addEventListener('resize', ajustarEscala);
+    
+    return () => {
+      window.removeEventListener('resize', ajustarEscala);
+    };
   }, []);
 
   const width = window.innerWidth;
@@ -849,16 +853,6 @@ const Tool = ({ }) => {
     fetchData();
   };
 
-
-
-
-
-
-
-
-
-
-
   useEffect(() => {
     if (newSquareId && matrix) {
       const [journeyPhase, userAction, emotions] = matrix;
@@ -904,9 +898,6 @@ const Tool = ({ }) => {
       console.error("Erro ao excluir quadrado:", error);
     }
   };
-
-
-
 
   const [currentCellId, setCurrentCellId] = useState("");
   const [isPickerVisible, setPickerVisible] = useState(false);
@@ -1022,8 +1013,17 @@ const Tool = ({ }) => {
     }
   };
 
-return (
-    <>
+  return (
+    <div style={{
+      width: `${100 / scaleRatio}vw`,
+      height: `${100 / scaleRatio}vh`,
+      transform: `scale(${scaleRatio})`,
+      transformOrigin: "top left",
+      backgroundColor: "#E6E6E6",
+      overflow: "hidden"
+    }}>
+      
+      {/* 🚨 MODAIS E OVERLAYS TOTALMENTE POR FORA DO SCROLL 🚨 */}
       {loading && (
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
@@ -1196,8 +1196,9 @@ return (
         </Popup>
       )}
 
-      <div className="scrollable-container">
-        <div style={{ zoom: zoomRatio, minWidth: "100vw", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
+      {/* ⬇️ CONTEÚDO PRINCIPAL DA TELA (COM SCROLL E ZOOM) ⬇️ */}
+      <div className="scrollable-container" style={{ width: "100%", height: "100%", overflowX: "auto", overflowY: "hidden" }}>
+        <div style={{ minWidth: "100%", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
           
           <Navbar
             onSaveClick={() => { handleSaveClick(); showAlert() }}
@@ -1276,7 +1277,7 @@ return (
 
         </div>
       </div>
-    </>
+    </div>
   );
 
 };
