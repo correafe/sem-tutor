@@ -11,6 +11,7 @@ import IntroPopup from "./IntroPopup"; // Import the new popup component
 
 import fundomapas from "../../assets/Fundomapas.png";
 
+
 import "./MapCreation.css";
 
 const MapCreation = () => {
