@@ -32,18 +32,20 @@ const MapCreation = () => {
 
   const mapsPerPage = 5; // Number of maps per page
 
-  const [zoomRatio, setZoomRatio] = useState(1);
+  // Substitua o estado zoomRatio por scaleRatio
+  const [scaleRatio, setScaleRatio] = useState(1);
 
   useEffect(() => {
-    const ajustarZoom = () => {
+    const ajustarEscala = () => {
+      // 950px é a altura base para o cálculo
       const proporcao = window.innerHeight / 950;
-      // Garante que o zoom nunca seja maior que 1 (100%).
-      // Ou seja, só encolhe em telas pequenas, mas não aumenta em telas grandes!
-      setZoomRatio(proporcao < 1 ? proporcao : 1);
+      setScaleRatio(proporcao);
     };
-    ajustarZoom();
-    window.addEventListener('resize', ajustarZoom);
-    return () => window.removeEventListener('resize', ajustarZoom);
+    
+    ajustarEscala();
+    window.addEventListener('resize', ajustarEscala);
+    
+    return () => window.removeEventListener('resize', ajustarEscala);
   }, []);
 
   useEffect(() => {
@@ -218,9 +220,15 @@ const MapCreation = () => {
   }, [filterText]);
 
   return (
-    <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
-      {/* DIV NOVA: O zoom vai apenas no conteúdo, não no fundo! */}
-      <div style={{ zoom: zoomRatio }}>
+    <div style={{
+      width: `${100 / scaleRatio}vw`,
+      height: `${100 / scaleRatio}vh`,
+      transform: `scale(${scaleRatio})`,
+      transformOrigin: "top left",
+      backgroundColor: "#E6E6E6",
+      overflow: "hidden"
+    }}>
+      <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, backgroundSize: "cover", backgroundPosition: "center", height: "100%", width: "100%" }}>
       
       <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
         <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
