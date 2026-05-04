@@ -1,20 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, LogOut, Trash, Pencil, ChevronRight, ChevronLeft, ChevronsRight, ChevronsLeft, HelpCircle, Compass } from 'lucide-react';
 import ModalName from "../../components/ModalName";
-import { LogOut, Trash, Pencil, ChevronRight , ChevronLeft, ChevronsRight , ChevronsLeft } from 'lucide-react';
 import { auth } from '../../services/firebase';
 import { signOut } from 'firebase/auth';
-
-import IntroPopup from "./IntroPopup"; // Import the new popup component
+import { DashboardTour } from '../../components/Tour'; 
+import IntroPopup from "./IntroPopup"; 
+import FAQContent from "../../components/FAQContent";
+import { ScoreContext } from '../../contexts/ScoreContext';
+import teste1 from '../../assets/teste1.png';
+import teste2 from '../../assets/teste2.png';
+import teste3 from '../../assets/teste3.png';
+import teste4 from '../../assets/teste4.png';
+import teste5 from '../../assets/teste5.png';
+import { Trophy } from 'lucide-react';
+import RankingModal from '../../components/RankingModal';
 
 import fundomapas from "../../assets/Fundomapas.png";
-
-
 import "./MapCreation.css";
 
 const MapCreation = () => {
+
+  const [scaleRatio, setScaleRatio] = useState(1);
+
+  useEffect(() => {
+    const ajustarEscala = () => {
+      // 950px é a altura perfeita para as linhas não cortarem
+      const proporcao = window.innerHeight / 950;
+      setScaleRatio(proporcao);
+    };
+    
+    ajustarEscala();
+    window.addEventListener('resize', ajustarEscala);
+    
+    return () => {
+      window.removeEventListener('resize', ajustarEscala);
+    };
+  }, []);
+
+  const [showFAQ, setShowFAQ] = useState(false);
   const [maps, setMaps] = useState([]);
   const [reloadMaps, setReloadMaps] = useState(false);
   const [newMapName, setNewMapName] = useState('');
@@ -28,25 +53,45 @@ const MapCreation = () => {
   const [mapToDelete, setMapToDelete] = useState(null);
   const [mapToUpdate, setmapToUpdate] = useState(null);
   const [filterText, setFilterText] = useState('');
-  const [showIntroPopup, setShowIntroPopup] = useState(true); // State to manage the intro popup
+  const [showIntroPopup, setShowIntroPopup] = useState(false);
+  
+  const [showTourPrompt, setShowTourPrompt] = useState(false);
+  const [runDashboardTour, setRunDashboardTour] = useState(false);
+  const [showMapCreationPrompt, setShowMapCreationPrompt] = useState(false);
+  const [isTutorialMode, setIsTutorialMode] = useState(false);
+  const [askedForMapTutorial, setAskedForMapTutorial] = useState(false);
 
-  const mapsPerPage = 5; // Number of maps per page
+  const [showRankingModal, setShowRankingModal] = useState(false);
 
-  // Substitua o estado zoomRatio por scaleRatio
-  const [scaleRatio, setScaleRatio] = useState(1);
+  const mapsPerPage = 5; 
 
-  useEffect(() => {
-    const ajustarEscala = () => {
-      // 950px é a altura base para o cálculo
-      const proporcao = window.innerHeight / 950;
-      setScaleRatio(proporcao);
-    };
-    
-    ajustarEscala();
-    window.addEventListener('resize', ajustarEscala);
-    
-    return () => window.removeEventListener('resize', ajustarEscala);
-  }, []);
+  const { score } = useContext(ScoreContext); 
+
+  // LOGICA DO RANKING
+  const getRankInfo = (currentScore) => {
+      if (currentScore < 100) return { 
+        title: "Aprendiz", icon: "🥉", className: "rank-bronze",
+        frameUrl: teste1
+      };
+      if (currentScore < 300) return { 
+        title: "Explorador", icon: "🥈", className: "rank-silver",
+        frameUrl: teste2
+      };
+      if (currentScore < 500) return { 
+        title: "Mapeador", icon: "🥇", className: "rank-gold",
+        frameUrl: teste3
+      };
+      if (currentScore < 700) return { 
+        title: "Especialista", icon: "🔮", className: "rank-platinum",
+        frameUrl: teste4
+      };
+      return { 
+        title: "Mestre", icon: "👑", className: "rank-diamond",
+        frameUrl: teste5
+      };
+  };
+
+  const rankInfo = getRankInfo(score);
 
   useEffect(() => {
     const fetchUserMaps = async () => {
@@ -63,17 +108,46 @@ const MapCreation = () => {
     };
 
     fetchUserMaps();
-  }, [reloadMaps]);
+
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    
+    if (currentUser && currentUser.uid) {
+      const hasSeenTour = localStorage.getItem(`hasSeenDashboardTour_${currentUser.uid}`);
+      if (!hasSeenTour) {
+        setShowTourPrompt(true); 
+      }
+
+      const hasSeenIntro = localStorage.getItem(`hasSeenIntro_${currentUser.uid}`);
+      if (!hasSeenIntro) {
+        setShowIntroPopup(true); 
+        localStorage.setItem(`hasSeenIntro_${currentUser.uid}`, 'true');
+      }
+    }
+
+  }, [reloadMaps]); 
 
   const handleCreateNewMap = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.uid && newMapName.trim() !== '') {
       try {
-        await axios.post(`${import.meta.env.VITE_BACKEND}/journeyMap`, { uid: user.uid, name: newMapName });
-        setReloadMaps(prevState => !prevState);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND}/journeyMap`, { uid: user.uid, name: newMapName });
+        
+        const createdMap = response.data.journeyMap;
+        const newMapId = createdMap ? (createdMap.id || createdMap._id) : null;
+
         setNewMapName('');
+
+        if (isTutorialMode && newMapId) {
+          localStorage.setItem('startToolTutorial', 'true');
+          setIsTutorialMode(false); 
+          navigate(`/home/${newMapId}`); 
+        } else {
+          setReloadMaps(prevState => !prevState);
+        }
+
       } catch (error) {
         console.error('Error creating new map:', error);
+        setIsTutorialMode(false);
       }
     }
   };
@@ -96,8 +170,6 @@ const MapCreation = () => {
     }
   };
   
-  
-
   const handlePickerClose = () => {
     setPickerVisible(false);
   };
@@ -173,7 +245,7 @@ const MapCreation = () => {
 
   const handleClearInput = () => {
     setFilterText("");
-    setCurrentPage(1); // Reset to page 1 when clearing the filter
+    setCurrentPage(1); 
   }
 
   const handleDeleteMap = async (mapId) => {
@@ -216,13 +288,28 @@ const MapCreation = () => {
   };
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to page 1 when the filter text changes
+    setCurrentPage(1); 
   }, [filterText]);
 
-return (
-    <> {/* Fragmento do React para permitir elementos irmãos */}
-      
-      {/* 1. O CONTEÚDO DA PÁGINA COM ZOOM */}
+  const startTour = () => {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    setShowTourPrompt(false);
+    setRunDashboardTour(true);
+    if (currentUser && currentUser.uid) {
+      localStorage.setItem(`hasSeenDashboardTour_${currentUser.uid}`, 'true');
+    }
+  };
+
+  const stopTour = () => {
+    setRunDashboardTour(false);
+    if (!askedForMapTutorial) {
+      setShowMapCreationPrompt(true);
+      setAskedForMapTutorial(true); 
+    }
+  };
+
+  return (
+    <>
       <div style={{
         width: `${100 / scaleRatio}vw`,
         height: `${100 / scaleRatio}vh`,
@@ -249,7 +336,21 @@ return (
                 setShowFAQ(true);
               }}
               style={{ 
-                marginRight: '20px', backgroundColor: '#B590CA', color: 'white', border: 'none', borderRadius: '50%', width: '50px', height: '50px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', fontSize: '16px', fontWeight: 'bold', fontFamily: 'sans-serif' 
+                marginRight: '20px', 
+                backgroundColor: '#B590CA', 
+                color: 'white', 
+                border: 'none',
+                borderRadius: '50%', 
+                width: '50px', 
+                height: '50px', 
+                cursor: 'pointer', 
+                display: 'flex',
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                fontSize: '16px', 
+                fontWeight: 'bold', 
+                fontFamily: 'sans-serif' 
               }}
               title="Perguntas Frequentes"
             >
@@ -261,7 +362,18 @@ return (
               onClick={startTour} 
               title="Tour"
               style={{ 
-                marginRight: '20px', backgroundColor: '#8CA8F9', color: 'white', border: 'none', borderRadius: '50%', width: '50px', height: '50px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                marginRight: '20px', 
+                backgroundColor: '#8CA8F9',
+                color: 'white', 
+                border: 'none',
+                borderRadius: '50%', 
+                width: '50px', 
+                height: '50px', 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
               }}
             >
               <Compass size={28} />
@@ -271,7 +383,18 @@ return (
               id="dashboard-ranking-btn" 
               onClick={() => setShowRankingModal(true)} 
               style={{ 
-                marginRight: '20px', backgroundColor: '#F4A261', color: '#fff', border: 'none', borderRadius: '50%', width: '50px', height: '50px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                marginRight: '20px', 
+                backgroundColor: '#F4A261', 
+                color: '#fff', 
+                border: 'none',
+                borderRadius: '50%', 
+                width: '50px', 
+                height: '50px', 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
               }}
               title="Ranking"
             >
@@ -280,8 +403,16 @@ return (
 
             <div className="avatar-tooltip-container" style={{ marginRight: '20px' }}>
               <div className="avatar-wrapper">
-                <img src={usuario?.providerData?.[0]?.photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" className="user-avatar-image" />
-                <img src={rankInfo.frameUrl} alt="Moldura Ranking" className="rank-frame-image" />
+                <img 
+                  src={usuario?.providerData?.[0]?.photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} 
+                  alt="Profile" 
+                  className="user-avatar-image" 
+                />
+                <img 
+                  src={rankInfo.frameUrl} 
+                  alt="Moldura Ranking" 
+                  className="rank-frame-image" 
+                />
               </div>
               
               <div className="avatar-tooltip">
@@ -358,14 +489,18 @@ return (
         </div>
       </div>
 
-      {/* 2. TODOS OS MODAIS DO LADO DE FORA DO ZOOM! */}
+      {/* POPUPS E MODAIS FORA DO CONTEÚDO COM ZOOM */}
       {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />}
       
       {showTourPrompt && (
         <ModalName trigger={showTourPrompt} setTrigger={setShowTourPrompt}>
           <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <h1 style={{ fontSize: "40px", marginTop: "30px", marginBottom: "30px" }}>Boas-vindas ao JEM!</h1>
-            <p style={{ fontSize: "24px", marginBottom: "40px" }}>Percebemos que é sua primeira vez aqui. Você gostaria de fazer um tour rápido pela ferramenta?</p>
+            <h1 style={{ fontSize: "40px", marginTop: "30px", marginBottom: "30px" }}>
+              Boas-vindas ao JEM!
+            </h1>
+            <p style={{ fontSize: "24px", marginBottom: "40px" }}>
+              Percebemos que é sua primeira vez aqui. Você gostaria de fazer um tour rápido pela ferramenta?
+            </p>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button className="botaocancelname" onClick={() => {
@@ -374,7 +509,9 @@ return (
                 localStorage.setItem(`hasSeenDashboardTour_${currentUser.uid}`, 'true');
               }
               setShowTourPrompt(false);
-            }}>Agora não</button>
+            }}>
+              Agora não
+            </button>
             <button className="botaosavename" onClick={startTour}>Sim, por favor!</button>
           </div>
         </ModalName>
@@ -383,8 +520,12 @@ return (
       {showMapCreationPrompt && (
         <ModalName trigger={showMapCreationPrompt} setTrigger={setShowMapCreationPrompt}>
           <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <h1 style={{ fontSize: "40px", marginTop: "30px", marginBottom: "30px" }}>Tutorial</h1>
-            <p style={{ fontSize: "24px", marginBottom: "40px" }}>Você gostaria de aprender a criar seu primeiro Mapa de Jornada agora?</p>
+            <h1 style={{ fontSize: "40px", marginTop: "30px", marginBottom: "30px" }}>
+              Tutorial
+            </h1>
+            <p style={{ fontSize: "24px", marginBottom: "40px" }}>
+              Você gostaria de aprender a criar seu primeiro Mapa de Jornada agora?
+            </p>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button className="botaocancelname" onClick={() => setShowMapCreationPrompt(false)}>Agora não</button>
@@ -397,15 +538,21 @@ return (
         </ModalName>
       )}
 
-      {showRankingModal && <RankingModal onClose={() => setShowRankingModal(false)} />}
+      {showRankingModal && (
+        <RankingModal onClose={() => setShowRankingModal(false)} />
+      )}
 
       {isPickerVisible && (
         <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>{isTutorialMode ? "Tutorial: Crie seu Mapa" : "Criar Mapa de jornada"}</h1>
+            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>
+              {isTutorialMode ? "Tutorial: Crie seu Mapa" : "Criar Mapa de jornada"}
+            </h1>
           </div>
           {isTutorialMode && (
-            <p style={{fontSize: '20px', marginBottom: '20px', marginTop: '-20px', color: '#555'}}>Vamos fazer um mapa de exemplo. Dê um título, como "Pedir uma Pizza".</p>
+            <p style={{fontSize: '20px', marginBottom: '20px', marginTop: '-20px', color: '#555'}}>
+              Vamos fazer um mapa de exemplo. Dê um título, como "Pedir uma Pizza".
+            </p>
           )}
           <input 
             type="text" 
@@ -450,11 +597,12 @@ return (
         <ModalName trigger={showFAQ} setTrigger={setShowFAQ}>
           <FAQContent />
           <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-            <button className="botaocancelname" onClick={() => setShowFAQ(false)}>Fechar</button>
+            <button className="botaocancelname" onClick={() => setShowFAQ(false)}>
+              Fechar
+            </button>
           </div>
         </ModalName>
       )}
-
     </>
   );
 };
