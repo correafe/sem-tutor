@@ -9,13 +9,15 @@ import { GoogleAuthProvider } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD8gNW4z2zZDf2w6_UHQLRLbPvEJm-kfxg",
-  authDomain: "journeymapeasy.firebaseapp.com",
-  projectId: "journeymapeasy",
-  storageBucket: "journeymapeasy.appspot.com",
-  messagingSenderId: "741919285657",
-  appId: "1:741919285657:web:526c48ccd7b6e8d3d8f308"
+  apiKey: "AIzaSyDwkcGbXa_EXM7ABpbrJOvVI_0HZipmFqg",
+  authDomain: "journeymapeasy-sem-tutor.firebaseapp.com",
+  projectId: "journeymapeasy-sem-tutor",
+  storageBucket: "journeymapeasy-sem-tutor.firebasestorage.app",
+  messagingSenderId: "350419191088",
+  appId: "1:350419191088:web:4785cbb53db0955dc7b4f5",
+  measurementId: "G-4EJJV5NT5Q"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
