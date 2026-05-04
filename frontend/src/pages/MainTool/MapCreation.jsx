@@ -216,88 +216,92 @@ const MapCreation = () => {
     setCurrentPage(1); // Reset to page 1 when the filter text changes
   }, [filterText]);
 
-return (
-    <>
-      {/* 🚨 MODAIS E OVERLAYS FORA DO CONTAINER COM SCALE 🚨 */}
-      {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />}
+  return (
+    <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
+      {/* DIV NOVA: O zoom vai apenas no conteúdo, não no fundo! */}
+      <div style={{ zoom: zoomRatio }}>
       
-      {showTourPrompt && (
-        <ModalName trigger={showTourPrompt} setTrigger={setShowTourPrompt}>
-          <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <h1 style={{ fontSize: "40px", marginTop: "30px", marginBottom: "30px" }}>
-              Boas-vindas ao JEM!
-            </h1>
-            <p style={{ fontSize: "24px", marginBottom: "40px" }}>
-              Percebemos que é sua primeira vez aqui. Você gostaria de fazer um tour rápido pela ferramenta?
-            </p>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button className="botaocancelname" onClick={() => {
-              const currentUser = JSON.parse(localStorage.getItem('user'));
-              if (currentUser && currentUser.uid) {
-                localStorage.setItem(`hasSeenDashboardTour_${currentUser.uid}`, 'true');
-              }
-              setShowTourPrompt(false);
-            }}>
-              Agora não
-            </button>
-            <button className="botaosavename" onClick={startTour}>Sim, por favor!</button>
-          </div>
-        </ModalName>
-      )}
-
-      {showMapCreationPrompt && (
-        <ModalName trigger={showMapCreationPrompt} setTrigger={setShowMapCreationPrompt}>
-          <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <h1 style={{ fontSize: "40px", marginTop: "30px", marginBottom: "30px" }}>
-              Tutorial
-            </h1>
-            <p style={{ fontSize: "24px", marginBottom: "40px" }}>
-              Você gostaria de aprender a criar seu primeiro Mapa de Jornada agora?
-            </p>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button className="botaocancelname" onClick={() => setShowMapCreationPrompt(false)}>Agora não</button>
-            <button className="botaosavename" onClick={() => {
-              setShowMapCreationPrompt(false);
-              setIsTutorialMode(true); 
-              setPickerVisible(true); 
-            }}>Sim, vamos lá!</button>
-          </div>
-        </ModalName>
-      )}
-
-      {showRankingModal && (
-        <RankingModal onClose={() => setShowRankingModal(false)} />
-      )}
-
+      <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
+        <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
+        <p>JEM</p>
+        <div className="textoboas" style={{ flex: "1" }}>
+          <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
+        </div>
+        <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "20px" }} />
+        <button className="botaologout" onClick={handleLogout}>
+          <LogOut />
+        </button>
+      </div>
+      {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />} 
       {isPickerVisible && (
         <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>
-              {isTutorialMode ? "Tutorial: Crie seu Mapa" : "Criar Mapa de jornada"}
-            </h1>
+            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Criar Mapa de jornada</h1>
           </div>
-          {isTutorialMode && (
-            <p style={{fontSize: '20px', marginBottom: '20px', marginTop: '-20px', color: '#555'}}>
-              Vamos fazer um mapa de exemplo. Dê um título, como "Pedir uma Pizza".
-            </p>
-          )}
-          <input 
-            type="text" 
-            value={newMapName} 
-            onChange={handleMapNameChange} 
-            className="inputname" 
-            placeholder={isTutorialMode ? "Ex: Pedir uma Pizza" : "Título do novo mapa"} 
-          />
+          <input type="text" value={newMapName} onChange={handleMapNameChange} className="inputname" placeholder="Título do novo mapa" />
           <div className="" style={{ margin: "0", textAlign: "center" }}>
-            <button className="botaosavename" onClick={() => { handleCreateNewMap(); handlePickerClose(); }} disabled={!newMapName.trim()}>
-              {isTutorialMode ? "Começar Tutorial do Mapa!" : "Criar Novo Mapa"}
-            </button>
+            <button className="botaosavename" onClick={() => { handleCreateNewMap(); handlePickerClose(); }} disabled={!newMapName.trim()}>Criar Novo Mapa</button>
           </div>
         </ModalName>
       )}
-
+      {maps.length > 0 ? (
+        <div className="margem">
+          <div className="input-wrapper">
+            <h1 className="mapasuser">Mapas de Jornada do Usuário:</h1>
+            <input
+              type="text"
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+              placeholder="Filtrar por nome..."
+              className="input-filter"
+            />
+            <X className='x' onClick={handleClearInput} size={40} />
+          </div>
+          <div className="pad">
+            <div className="separar">
+              <div className="blocoadd" onClick={handleClickModal}>
+                <h4 className="icon"><Plus size={200} /></h4>
+                <div className="bloconovo">
+                  <p>Novo mapa</p>
+                </div>
+              </div>
+            </div>
+            {currentMaps
+              .map((map, index) => (
+                <div key={map.id}>
+                  <div className="separar">
+                    <div className="bloco" style={{ backgroundColor: getColorAtIndex(index) }} onClick={() => handleSelectMap(map.id)} >
+                      <h4 className="texto">{truncateText(map.name)}</h4>
+                      <div className="divbotoes">
+                        <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleDeleteButtonClick(map.id); }}> <Trash className='icontrash' size={40} /> </button>
+                        <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleEditButtonClick(map.id); }}> <Pencil className='icontrash' size={40} /> </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className="pagination">
+            <button className="buttonPage" onClick={handleFirstPage} disabled={currentPage === 1}> <ChevronsLeft/> </button>
+            <button className="buttonPage" onClick={handlePreviousPage} disabled={currentPage === 1}><ChevronLeft/></button>
+            <p className="pagePar" > Página {currentPage} de {totalPages} </p>
+            <button className="buttonPage" onClick={handleNextPage} disabled={currentPage === totalPages}><ChevronRight/></button>
+            <button className="buttonPage" onClick={handleLastPage} disabled={currentPage === totalPages}><ChevronsRight/></button>
+          </div>
+        </div>
+      ) : (
+        <div className="margem2" >
+          <p className="nenhum">Nenhum mapa encontrado.</p>
+          <div className="separar">
+            <div className="blocoadd" onClick={handleClickModal}>
+              <h4 className="icon"><Plus size={200} /></h4>
+              <div className="bloconovo">
+                <p>Novo mapa</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {confirmDelete && (
         <ModalName trigger={confirmDelete} setTrigger={setConfirmDelete}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -309,7 +313,6 @@ return (
           </div>
         </ModalName>
       )}
-
       {modalUpdate && (
         <ModalName trigger={modalUpdate} setTrigger={setmodalUpdate}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
@@ -321,198 +324,8 @@ return (
           </div>
         </ModalName>
       )}
-
-      {showFAQ && (
-        <ModalName trigger={showFAQ} setTrigger={setShowFAQ}>
-          <FAQContent />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-            <button className="botaocancelname" onClick={() => setShowFAQ(false)}>
-              Fechar
-            </button>
-          </div>
-        </ModalName>
-      )}
-
-      {/* ⬇️ CONTEÚDO DA PÁGINA (ESTE SOFRE O SCALE) ⬇️ */}
-      <div style={{
-        width: `${100 / scaleRatio}vw`,
-        height: `${100 / scaleRatio}vh`,
-        transform: `scale(${scaleRatio})`,
-        transformOrigin: "top left",
-        backgroundColor: "#E6E6E6",
-        overflow: "hidden"
-      }}>
-        <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, backgroundSize: "cover", backgroundPosition: "center", height: "100%", width: "100%" }}>
-          <DashboardTour run={runDashboardTour} onTourEnd={stopTour} />
-
-          <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
-            <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
-            <p>JEM</p>
-            <div className="textoboas" style={{ flex: "1" }}>
-              <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
-            </div>
-            
-            <button 
-              id="faq-dashboard-btn"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowFAQ(true);
-              }}
-              style={{ 
-                marginRight: '20px', 
-                backgroundColor: '#B590CA', 
-                color: 'white', 
-                border: 'none',
-                borderRadius: '50%', 
-                width: '50px', 
-                height: '50px', 
-                cursor: 'pointer', 
-                display: 'flex',
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                fontSize: '16px', 
-                fontWeight: 'bold', 
-                fontFamily: 'sans-serif' 
-              }}
-              title="Perguntas Frequentes"
-            >
-              FAQ
-            </button>
-
-            <button 
-              id="dashboard-tour-btn"
-              onClick={startTour} 
-              title="Tour"
-              style={{ 
-                marginRight: '20px', 
-                backgroundColor: '#8CA8F9',
-                color: 'white', 
-                border: 'none',
-                borderRadius: '50%', 
-                width: '50px', 
-                height: '50px', 
-                cursor: 'pointer', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-              }}
-            >
-              <Compass size={28} />
-            </button>
-              
-            <button 
-              id="dashboard-ranking-btn" 
-              onClick={() => setShowRankingModal(true)} 
-              style={{ 
-                marginRight: '20px', 
-                backgroundColor: '#F4A261', 
-                color: '#fff', 
-                border: 'none',
-                borderRadius: '50%', 
-                width: '50px', 
-                height: '50px', 
-                cursor: 'pointer', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-              }}
-              title="Ranking"
-            >
-              <Trophy size={26} />
-            </button>
-
-            <div className="avatar-tooltip-container" style={{ marginRight: '20px' }}>
-              <div className="avatar-wrapper">
-                <img 
-                  src={usuario?.providerData?.[0]?.photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} 
-                  alt="Profile" 
-                  className="user-avatar-image" 
-                />
-                <img 
-                  src={rankInfo.frameUrl} 
-                  alt="Moldura Ranking" 
-                  className="rank-frame-image" 
-                />
-              </div>
-              
-              <div className="avatar-tooltip">
-                <span style={{ fontWeight: 'bold', color: '#E8B63E', fontSize: '18px' }}>🏆 {score} pts</span>
-                <span style={{ fontSize: '12px', color: '#fff', backgroundColor: '#666', padding: '2px 8px', borderRadius: '10px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>
-                  {rankInfo.title}
-                </span>
-              </div>
-            </div>
-
-            <button className="botaologout" onClick={handleLogout} title='LogOut'>
-              <LogOut size={24}/>
-            </button>
-          </div>
-
-          {maps.length > 0 ? (
-            <div className="margem">
-              <div className="input-wrapper">
-                <h1 className="mapasuser">Mapas de Jornada do Usuário:</h1>
-                <input
-                  type="text"
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
-                  placeholder="Filtrar por nome..."
-                  className="input-filter"
-                />
-                <X className='x' onClick={handleClearInput} size={40} />
-              </div>
-              <div className="pad">
-                <div className="separar">
-                  <div className="blocoadd" onClick={handleClickModal}>
-                    <h4 className="icon"><Plus size={200} /></h4>
-                    <div className="bloconovo">
-                      <p>Novo mapa</p>
-                    </div>
-                  </div>
-                </div>
-                {currentMaps
-                  .map((map, index) => (
-                    <div key={map.id}>
-                      <div className="separar">
-                        <div className="bloco" style={{ backgroundColor: getColorAtIndex(index) }} onClick={() => handleSelectMap(map.id)} > 
-                          <h4 className="texto">{truncateText(map.name)}</h4>
-                          <div className="divbotoes">
-                            <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleDeleteButtonClick(map.id); }}> <Trash className='icontrash' size={40} /> </button>
-                            <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleEditButtonClick(map.id); }}> <Pencil className='icontrash' size={40} /> </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-              <div className="pagination">
-                <button className="buttonPage" onClick={handleFirstPage} disabled={currentPage === 1}> <ChevronsLeft/> </button>
-                <button className="buttonPage" onClick={handlePreviousPage} disabled={currentPage === 1}><ChevronLeft/></button>
-                <p className="pagePar" > Página {currentPage} de {totalPages} </p>
-                <button className="buttonPage" onClick={handleNextPage} disabled={currentPage === totalPages}><ChevronRight/></button>
-                <button className="buttonPage" onClick={handleLastPage} disabled={currentPage === totalPages}><ChevronsRight/></button>
-              </div>
-            </div>
-          ) : (
-            <div className="margem2" >
-              <p className="nenhum">Nenhum mapa encontrado.</p>
-              <div className="separar">
-                <div className="blocoadd" onClick={handleClickModal}>
-                  <h4 className="icon"><Plus size={200} /></h4>
-                  <div className="bloconovo">
-                    <p>Novo mapa</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
+    </div>
+    </div>
   );
 };
 
