@@ -849,6 +849,16 @@ const Tool = ({ }) => {
     fetchData();
   };
 
+
+
+
+
+
+
+
+
+
+
   useEffect(() => {
     if (newSquareId && matrix) {
       const [journeyPhase, userAction, emotions] = matrix;
@@ -894,6 +904,9 @@ const Tool = ({ }) => {
       console.error("Erro ao excluir quadrado:", error);
     }
   };
+
+
+
 
   const [currentCellId, setCurrentCellId] = useState("");
   const [isPickerVisible, setPickerVisible] = useState(false);
