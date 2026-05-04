@@ -2,11 +2,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-color: #FFFFFF;
+  /* color: #FFFFFF; */
 }
 
 body {
   font-family: Nunito, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #E6E6E6; 
 }
 
 .nenhum {
@@ -320,9 +324,9 @@ body {
   outline: none;
 }
 
-.x{
+.x {
   cursor: pointer;
-  margin-right:
+  margin-right: 10px; 
   color: white;
 }
 
