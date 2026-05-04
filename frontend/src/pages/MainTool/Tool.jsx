@@ -1022,15 +1022,183 @@ const Tool = ({ }) => {
     }
   };
 
-  return (
-    <div className="scrollable-container">
-      <div style={{ zoom: zoomRatio, minWidth: "100vw", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
-        <>
-          {loading && (
-            <div className="loading-overlay">
-              <div className="loading-spinner"></div>
+return (
+    <>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
+
+      <Popup trigger={buttonPopup} setTrigger={setButtonPopup} setTextEdit={setTextEdit} setScenario={setScenario} style={{ borderRadius: "25px", padding: "20px", backgroundColor: "#f9f9f9", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
+        {textEdit ? (
+          <>
+            <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
+              <h1 style={{ fontSize: "36px", marginTop: "20px", marginBottom: "20px", color: "#333" }}>Editar card</h1>
             </div>
-          )}
+            <div className="areatexto">
+              <textarea
+                type="text"
+                value={editedText}
+                placeholder="Texto vazio"
+                className="textolegal"
+                onChange={(e) => setEditedText(e.target.value)}
+                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+              />
+              <div className="separarbotoes" style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex' }}>
+                  <button
+                    className="buttonconf"
+                    onClick={() => { handleTextSubmit(); setButtonPopup(false); setTextEdit(false) }}
+                    style={{ backgroundColor: '#4caf50', color: 'white', padding: '10px 40px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '22px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                  >
+                    Salvar texto
+                  </button>
+                  <button
+                    className="buttonconf2"
+                    onClick={() => setEditedText('')}
+                    style={{ backgroundColor: '#f44336', color: 'white', padding: '10px 40px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '22px', marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                  >
+                    Limpar texto
+                  </button>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="number"
+                    id="houseCount"
+                    value={selectedHouses}
+                    onChange={handleSelectChange}
+                    min={1}
+                    step={1}
+                    className="houseInput"
+                    style={{
+                      width: '100px',
+                      height: '60px',
+                      borderRadius: '5px',
+                      border: '1px solid #ccc',
+                      marginRight: '10px',
+                      padding: '5px',
+                      fontSize: '28px',
+                      textAlign: 'center',
+                      position: 'relative'
+                    }}
+                  />
+                  <p style={{ margin: '0', fontSize: '22px', color: '#333' }}>Card(s)</p>
+                  <button
+                    className="botaosavetamanho"
+                    onClick={handleSaveHouse}
+                    style={{ backgroundColor: '#4caf50', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '18px', marginLeft: '10px', width: '100px', height: "60px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                  >
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : scenario === true ? (
+          <>
+            <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
+              <h1 style={{ fontSize: "50px" }}>Cenário</h1>
+            </div>
+            <br />
+            <h2>Nome do cenário</h2>
+            <input
+              type="text"
+              className="input-texto"
+              value={sceneName}
+              onChange={(e) => setSceneName(e.target.value)}
+              placeholder="Escreva o título..."
+            />
+            <h2 style={{ marginBottom: "-20px" }}>Descreva o cenário</h2>
+            <div className="areatexto">
+              <textarea
+                type="text"
+                className="textolegal"
+                value={sceneDesc}
+                onChange={(e) => setSceneDesc(e.target.value)}
+                placeholder="Escreva o cenário..."
+                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+              />
+              <div className="separarbotoes">
+                <button className="buttonconf" onClick={() => { setButtonPopup(false); setScenario(false); handleSaveScenario() }}>
+                  Salvar cenário
+                </button>
+                <button className="buttonconf2" onClick={() => { setSceneName(''); setSceneDesc('') }}>
+                  Limpar texto
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
+              <h1 style={{ fontSize: "50px" }}>Mapas de jornada</h1>
+              <button className="button info" style={{ marginLeft: "1.5vh", cursor: "auto" }}>
+                i
+              </button>
+            </div>
+            <div style={{ display: "flex", alignItems: "flex-start", marginTop: "50px" }}>
+              <div style={{ marginRight: "20px", textAlign: "center", width: "80%" }}>
+                <img
+                  src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true"
+                  style={{ width: "100%", maxWidth: "200px" }}
+                  alt="Mascote"
+                />
+                <button
+                  onClick={() => { handleExport(); }}
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    width: "100%", 
+                    color: "white",
+                    padding: "10px 25px",
+                    borderRadius: "5px",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Download size={40} />
+                  <p style={{ fontSize: "18px", lineHeight: "1.6" }}>Download</p>
+                </button>
+              </div>
+              <div>
+                <p style={{ fontSize: "25px", lineHeight: "1.6", marginLeft: "40px" }}>
+                  Mapas de jornada de usuário são representações visuais que ilustram as etapas pelas quais os usuários passam ao interagir com um produto ou serviço. Eles ajudam a entender a experiência do usuário, identificando pontos de contato, emoções e possíveis obstáculos.
+                  <br /> <br />
+                  <i>Você pode baixar o seu mapa clicando no botão de download!</i>
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+      </Popup>
+
+      {isPickerVisible && (
+        <Popup trigger={isPickerVisible} setTrigger={setPickerVisible}>
+          <div className="PickerContainer">
+            <Picker
+              className="Picker"
+              data={data}
+              emojiSize={30}
+              emojiButtonSize={60}
+              perLine={20}
+              maxFrequentRows={10}
+              previewPosition="none"
+              navPosition="bottom"
+              emojiButtonRadius="100%"
+              theme="light"
+              locale="pt"
+              onEmojiSelect={(e) => handlePickerClose(e.native)}
+            />
+          </div>
+        </Popup>
+      )}
+
+      <div className="scrollable-container">
+        <div style={{ zoom: zoomRatio, minWidth: "100vw", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
+          
           <Navbar
             onSaveClick={() => { handleSaveClick(); showAlert() }}
             onInfoClick={() => setButtonPopup(true)}
@@ -1045,173 +1213,9 @@ const Tool = ({ }) => {
 
           <div style={{ height: "61.9px", width: "100%" }}></div>
           <div className="separator1" style={{ width: calculateTotalWidth(matrix) + 2400 }}></div>
-          <Popup trigger={buttonPopup} setTrigger={setButtonPopup} setTextEdit={setTextEdit} setScenario={setScenario} style={{ borderRadius: "25px", padding: "20px", backgroundColor: "#f9f9f9", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
-            {textEdit ? (
-              <>
-                <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-                  <h1 style={{ fontSize: "36px", marginTop: "20px", marginBottom: "20px", color: "#333" }}>Editar card</h1>
-                </div>
-                <div className="areatexto">
-                  <textarea
-                    type="text"
-                    value={editedText}
-                    placeholder="Texto vazio"
-                    className="textolegal"
-                    onChange={(e) => setEditedText(e.target.value)}
-                    style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-                  />
-                  <div className="separarbotoes" style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex' }}>
-                      <button
-                        className="buttonconf"
-                        onClick={() => { handleTextSubmit(); setButtonPopup(false); setTextEdit(false) }}
-                        style={{ backgroundColor: '#4caf50', color: 'white', padding: '10px 40px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '22px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                      >
-                        Salvar texto
-                      </button>
-                      <button
-                        className="buttonconf2"
-                        onClick={() => setEditedText('')}
-                        style={{ backgroundColor: '#f44336', color: 'white', padding: '10px 40px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '22px', marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                      >
-                        Limpar texto
-                      </button>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <input
-                        type="number"
-                        id="houseCount"
-                        value={selectedHouses}
-                        onChange={handleSelectChange}
-                        min={1}
-                        step={1}
-                        className="houseInput"
-                        style={{
-                          width: '100px',
-                          height: '60px',
-                          borderRadius: '5px',
-                          border: '1px solid #ccc',
-                          marginRight: '10px',
-                          padding: '5px',
-                          fontSize: '28px',
-                          textAlign: 'center',
-                          position: 'relative'
-                        }}
-                      />
-                      <p style={{ margin: '0', fontSize: '22px', color: '#333' }}>Card(s)</p>
-                      <button
-                        className="botaosavetamanho"
-                        onClick={handleSaveHouse}
-                        style={{ backgroundColor: '#4caf50', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '18px', marginLeft: '10px', width: '100px', height: "60px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                      >
-                        Salvar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-
-            ) : scenario === true ? (
-              <>
-                <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-                  <h1 style={{ fontSize: "50px" }}>Cenário</h1>
-                </div>
-                <br />
-                <h2>Nome do cenário</h2>
-                <input
-                  type="text"
-                  className="input-texto"
-                  value={sceneName}
-                  onChange={(e) => setSceneName(e.target.value)}
-                  placeholder="Escreva o título..."
-                />
-                <h2 style={{ marginBottom: "-20px" }}>Descreva o cenário</h2>
-                <div className="areatexto">
-                  <textarea
-                    type="text"
-                    className="textolegal"
-                    value={sceneDesc}
-                    onChange={(e) => setSceneDesc(e.target.value)}
-                    placeholder="Escreva o cenário..."
-                    style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-                  />
-                  <div className="separarbotoes">
-                    <button className="buttonconf" onClick={() => { setButtonPopup(false); setScenario(false); handleSaveScenario() }}>
-                      Salvar cenário
-                    </button>
-                    <button className="buttonconf2" onClick={() => { setSceneName(''); setSceneDesc('') }}>
-                      Limpar texto
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-                  <h1 style={{ fontSize: "50px" }}>Mapas de jornada</h1>
-                  <button className="button info" style={{ marginLeft: "1.5vh", cursor: "auto" }}>
-                    i
-                  </button>
-                </div>
-                <div style={{ display: "flex", alignItems: "flex-start", marginTop: "50px" }}>
-                  <div style={{ marginRight: "20px", textAlign: "center", width: "80%" }}>
-                    <img
-                      src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true"
-                      style={{ width: "100%", maxWidth: "200px" }}
-                      alt="Mascote"
-                    />
-                    <button
-                      onClick={() => { handleExport(); }}
-                      style={{
-                        backgroundColor: "#4CAF50",
-                        width: "100%", 
-                        color: "white",
-                        padding: "10px 25px",
-                        borderRadius: "5px",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "16px",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Download size={40} />
-                      <p style={{ fontSize: "18px", lineHeight: "1.6" }}>Download</p>
-                    </button>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: "25px", lineHeight: "1.6", marginLeft: "40px" }}>
-                      Mapas de jornada de usuário são representações visuais que ilustram as etapas pelas quais os usuários passam ao interagir com um produto ou serviço. Eles ajudam a entender a experiência do usuário, identificando pontos de contato, emoções e possíveis obstáculos.
-                      <br /> <br />
-                      <i>Você pode baixar o seu mapa clicando no botão de download!</i>
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
-          </Popup>
-          {isPickerVisible && (
-            <Popup trigger={isPickerVisible} setTrigger={setPickerVisible}>
-              <div className="PickerContainer">
-                <Picker
-                  className="Picker"
-                  data={data}
-                  emojiSize={30}
-                  emojiButtonSize={60}
-                  perLine={20}
-                  maxFrequentRows={10}
-                  previewPosition="none"
-                  navPosition="bottom"
-                  emojiButtonRadius="100%"
-                  theme="light"
-                  locale="pt"
-                  onEmojiSelect={(e) => handlePickerClose(e.native)}
-                />
-              </div>
-            </Popup>
-          )}
+          
           {dataLoaded && (
-            <div className="stage-container">
+            <div className="stage-container" style={{ position: 'absolute', top: 0, left: 0, marginTop: '28px', marginLeft: '160px', zIndex: 1 }}>
               <Stage width={calculateTotalWidth(matrix) + 1260} height={1000} ref={stageRef}>
                 <Layer>
                   <Matrix
@@ -1231,6 +1235,7 @@ const Tool = ({ }) => {
               </Stage>
             </div>
           )}
+
           <div className="teste-1" style={{ width: calculateTotalWidth(matrix) + 200 }}>
             <div className="fases-container" style={{ width: calculateTotalWidth(matrix) + 2400 }}>
               <div className="barra1" />
@@ -1268,9 +1273,10 @@ const Tool = ({ }) => {
             </div>
             <div className="separator1" style={{ width: calculateTotalWidth(matrix) + 2400 }}></div>
           </div>
-        </>
+
+        </div>
       </div>
-    </div>
+    </>
   );
 
 };

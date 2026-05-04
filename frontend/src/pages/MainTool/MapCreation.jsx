@@ -217,22 +217,9 @@ const MapCreation = () => {
   }, [filterText]);
 
   return (
-    <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
-      {/* DIV NOVA: O zoom vai apenas no conteúdo, não no fundo! */}
-      <div style={{ zoom: zoomRatio }}>
-      
-      <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
-        <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
-        <p>JEM</p>
-        <div className="textoboas" style={{ flex: "1" }}>
-          <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
-        </div>
-        <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "20px" }} />
-        <button className="botaologout" onClick={handleLogout}>
-          <LogOut />
-        </button>
-      </div>
+    <>
       {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />} 
+      
       {isPickerVisible && (
         <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
@@ -244,64 +231,7 @@ const MapCreation = () => {
           </div>
         </ModalName>
       )}
-      {maps.length > 0 ? (
-        <div className="margem">
-          <div className="input-wrapper">
-            <h1 className="mapasuser">Mapas de Jornada do Usuário:</h1>
-            <input
-              type="text"
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
-              placeholder="Filtrar por nome..."
-              className="input-filter"
-            />
-            <X className='x' onClick={handleClearInput} size={40} />
-          </div>
-          <div className="pad">
-            <div className="separar">
-              <div className="blocoadd" onClick={handleClickModal}>
-                <h4 className="icon"><Plus size={200} /></h4>
-                <div className="bloconovo">
-                  <p>Novo mapa</p>
-                </div>
-              </div>
-            </div>
-            {currentMaps
-              .map((map, index) => (
-                <div key={map.id}>
-                  <div className="separar">
-                    <div className="bloco" style={{ backgroundColor: getColorAtIndex(index) }} onClick={() => handleSelectMap(map.id)} >
-                      <h4 className="texto">{truncateText(map.name)}</h4>
-                      <div className="divbotoes">
-                        <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleDeleteButtonClick(map.id); }}> <Trash className='icontrash' size={40} /> </button>
-                        <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleEditButtonClick(map.id); }}> <Pencil className='icontrash' size={40} /> </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-          <div className="pagination">
-            <button className="buttonPage" onClick={handleFirstPage} disabled={currentPage === 1}> <ChevronsLeft/> </button>
-            <button className="buttonPage" onClick={handlePreviousPage} disabled={currentPage === 1}><ChevronLeft/></button>
-            <p className="pagePar" > Página {currentPage} de {totalPages} </p>
-            <button className="buttonPage" onClick={handleNextPage} disabled={currentPage === totalPages}><ChevronRight/></button>
-            <button className="buttonPage" onClick={handleLastPage} disabled={currentPage === totalPages}><ChevronsRight/></button>
-          </div>
-        </div>
-      ) : (
-        <div className="margem2" >
-          <p className="nenhum">Nenhum mapa encontrado.</p>
-          <div className="separar">
-            <div className="blocoadd" onClick={handleClickModal}>
-              <h4 className="icon"><Plus size={200} /></h4>
-              <div className="bloconovo">
-                <p>Novo mapa</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
       {confirmDelete && (
         <ModalName trigger={confirmDelete} setTrigger={setConfirmDelete}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -313,6 +243,7 @@ const MapCreation = () => {
           </div>
         </ModalName>
       )}
+
       {modalUpdate && (
         <ModalName trigger={modalUpdate} setTrigger={setmodalUpdate}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
@@ -324,8 +255,83 @@ const MapCreation = () => {
           </div>
         </ModalName>
       )}
-    </div>
-    </div>
+
+      <div className="map-creation-container" style={{ backgroundImage: `url(${fundomapas})`, height: "100vh", width: "100vw" }}>
+        <div style={{ zoom: zoomRatio }}>
+          
+          <div className="navbar" style={{ textAlign: "left", padding: "31px", fontSize: "30px", display: "flex", alignItems: "center" }}>
+            <img src="https://github.com/luca-ferro/imagestest/blob/main/mascote.png?raw=true" style={{ width: "50px", marginRight: "20px" }} alt="mascote"></img>
+            <p>JEM</p>
+            <div className="textoboas" style={{ flex: "1" }}>
+              <h1 style={{ margin: "0", textAlign: "center" }}>Olá {usuario.displayName ? usuario.displayName : ""}, seja muito bem-vindo(a)!</h1>
+            </div>
+            <img src={usuario.providerData[0].photoURL || "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"} alt="Profile" style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover", marginRight: "20px" }} />
+            <button className="botaologout" onClick={handleLogout}>
+              <LogOut />
+            </button>
+          </div>
+
+          {maps.length > 0 ? (
+            <div className="margem">
+              <div className="input-wrapper">
+                <h1 className="mapasuser">Mapas de Jornada do Usuário:</h1>
+                <input
+                  type="text"
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                  placeholder="Filtrar por nome..."
+                  className="input-filter"
+                />
+                <X className='x' onClick={handleClearInput} size={40} />
+              </div>
+              <div className="pad">
+                <div className="separar">
+                  <div className="blocoadd" onClick={handleClickModal}>
+                    <h4 className="icon"><Plus size={200} /></h4>
+                    <div className="bloconovo">
+                      <p>Novo mapa</p>
+                    </div>
+                  </div>
+                </div>
+                {currentMaps.map((map, index) => (
+                  <div key={map.id}>
+                    <div className="separar">
+                      <div className="bloco" style={{ backgroundColor: getColorAtIndex(index) }} onClick={() => handleSelectMap(map.id)} >
+                        <h4 className="texto">{truncateText(map.name)}</h4>
+                        <div className="divbotoes">
+                          <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleDeleteButtonClick(map.id); }}> <Trash className='icontrash' size={40} /> </button>
+                          <button className="lixeira" onClick={(e) => { e.stopPropagation(); handleEditButtonClick(map.id); }}> <Pencil className='icontrash' size={40} /> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="pagination">
+                <button className="buttonPage" onClick={handleFirstPage} disabled={currentPage === 1}> <ChevronsLeft/> </button>
+                <button className="buttonPage" onClick={handlePreviousPage} disabled={currentPage === 1}><ChevronLeft/></button>
+                <p className="pagePar" > Página {currentPage} de {totalPages} </p>
+                <button className="buttonPage" onClick={handleNextPage} disabled={currentPage === totalPages}><ChevronRight/></button>
+                <button className="buttonPage" onClick={handleLastPage} disabled={currentPage === totalPages}><ChevronsRight/></button>
+              </div>
+            </div>
+          ) : (
+            <div className="margem2" >
+              <p className="nenhum">Nenhum mapa encontrado.</p>
+              <div className="separar">
+                <div className="blocoadd" onClick={handleClickModal}>
+                  <h4 className="icon"><Plus size={200} /></h4>
+                  <div className="bloconovo">
+                    <p>Novo mapa</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </>
   );
 };
 
