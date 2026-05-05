@@ -296,10 +296,10 @@ return (
       {isPickerVisible && (
         <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Criar Mapa de jornada</h1>
+            <h1 style={{ fontSize: "28px", marginTop: "10px", marginBottom: "20px" }}>Criar Mapa de jornada</h1>
           </div>
           <input type="text" value={newMapName} onChange={handleMapNameChange} className="inputname" placeholder="Título do novo mapa" />
-          <div className="" style={{ margin: "0", textAlign: "center" }}>
+          <div style={{ margin: "0", textAlign: "center" }}>
             <button className="botaosavename" onClick={() => { handleCreateNewMap(); handlePickerClose(); }} disabled={!newMapName.trim()}>Criar Novo Mapa</button>
           </div>
         </ModalName>
@@ -307,10 +307,10 @@ return (
       
       {confirmDelete && (
         <ModalName trigger={confirmDelete} setTrigger={setConfirmDelete}>
-          <div style={{ textAlign: "left", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <h1 style={{ fontSize: "40px", marginTop: "60px", marginBottom: "50px", justifyContent: "center" }}>Tem certeza que deseja excluir esse mapa?</h1>
+          <div style={{ textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <h1 style={{ fontSize: "24px", marginTop: "20px", marginBottom: "30px" }}>Tem certeza que deseja excluir esse mapa?</h1>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
             <button className="botaosavename" onClick={handleConfirmDelete}>Sim</button>
             <button className="botaocancelname" onClick={handleCancelDelete}>Não</button>
           </div>
@@ -320,10 +320,10 @@ return (
       {modalUpdate && (
         <ModalName trigger={modalUpdate} setTrigger={setmodalUpdate}>
           <div style={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-            <h1 style={{ fontSize: "50px", marginTop: "50px", marginBottom: "30px" }}>Atualizar título do mapa:</h1>
+            <h1 style={{ fontSize: "28px", marginTop: "10px", marginBottom: "20px" }}>Atualizar título do mapa:</h1>
           </div>
           <input type="text" value={newMapNameUpdate} onChange={handleMapNameChangeUpdate} className="inputname" placeholder="Novo título do mapa" />
-          <div className="" style={{ margin: "0", textAlign: "center" }}>
+          <div style={{ margin: "0", textAlign: "center" }}>
             <button className="botaosavename" onClick={() => { handleConfirmUpdate(); }} disabled={!newMapNameUpdate.trim()}>Salvar</button>
           </div>
         </ModalName>
