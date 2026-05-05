@@ -1,65 +1,25 @@
-# **JourneyEasyMap (JEM)** <img src="https://raw.githubusercontent.com/GuilhermeHenq/Journey-map/refs/heads/main/frontend/src/assets/mascote.png" width="40px"></img>
+# **JourneyEasyMap (JEM)** <img src="[https://raw.githubusercontent.com/GuilhermeHenq/Journey-map/refs/heads/main/frontend/src/assets/mascote.png](https://raw.githubusercontent.com/GuilhermeHenq/Journey-map/refs/heads/main/frontend/src/assets/mascote.png)" width="40px"></img>
 
-**JourneyEasyMap (JEM)** is a User Journey Map (UJM) creation tool, designed for a Undergraduate thesis in the Federal University of Alfenas <b>(UNIFAL-MG)</b>.
+O **JourneyEasyMap (JEM)** é uma ferramenta de criação de Mapa de Jornada do Usuário (UJM), desenvolvida para um Trabalho de Conclusão de Curso na Universidade Federal de Alfenas <b>(UNIFAL-MG)</b>.
 
-- **Frontend**: Built with React.JS and Vite, leveraging the **React Konva** library for advanced shape manipulation and visualization.  
-- **Backend**: Developed using Node.js with the **Express** framework, ensuring robust and scalable server-side operations.  
-- **Database**: Utilizes a **MySQL** database, with the schema `mapjourney` to store and manage all application data.
+Esta ferramenta é uma adaptação do projeto original, disponível em: [https://github.com/GuilhermeHenq/EasyJourneyMap](https://github.com/GuilhermeHenq/EasyJourneyMap). 
+
+Você pode acessar a versão adaptada **sem gamificação** diretamente pelo link: **[https://sem-tutor.vercel.app/](https://sem-tutor.vercel.app/)**
+
+- **Frontend**: Construído com React.JS e Vite, utilizando a biblioteca **React Konva** para manipulação avançada de formas e visualização.  
+- **Backend**: Desenvolvido em Node.js com o framework **Express**, garantindo operações robustas e escaláveis no servidor.  
+- **Banco de Dados**: Utiliza um banco de dados **MySQL**, com o schema `mapjourney` para armazenar e gerenciar todos os dados da aplicação.
+- **Hospedagem / Infraestrutura**: O frontend está implantado na **Vercel** para garantir performance e entrega contínua, enquanto o backend e o banco de dados estão hospedados na **DigitalOcean**.
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/luca-ferro/images/refs/heads/main/WhatsApp%20Image%202024-12-04%20at%2020.08.09.jpeg" alt="Example of a User Journey Map in the JEM tool" /><br>
-  <b>Figure 1. Example of a User Journey Map in the JEM tool.</b>
+  <img src="[https://raw.githubusercontent.com/luca-ferro/images/refs/heads/main/WhatsApp%20Image%202024-12-04%20at%2020.08.09.jpeg](https://raw.githubusercontent.com/luca-ferro/images/refs/heads/main/WhatsApp%20Image%202024-12-04%20at%2020.08.09.jpeg)" alt="Exemplo de um Mapa de Jornada do Usuário na ferramenta JEM" /><br>
+  <b>Figura 1. Exemplo de um Mapa de Jornada do Usuário na ferramenta JEM.</b>
 </div>
 
 ---
 
-## **Getting Started**
+Esperamos que você aproveite o JourneyEasyMap! Para dúvidas ou mais informações, entre em contato com a equipe de desenvolvimento:
 
-### **Frontend Interface Setup**
-1. Navigate to the frontend directory:  
-   ```bash
-   cd ./frontend/
-2. Install dependencies:  
-   ```bash
-   npm install
-3. Start the development server:  
-   ```bash
-   npm run dev
-By default, React will run on <b>port 5173.</b>
-
-### **Backend Server Setup**
-1. Navigate to the backend directory:  
-   ```bash
-   cd ./backend/
-2. Install dependencies:  
-   ```bash
-   npm install
-3. Start the development server:  
-   ```bash
-   npm run dev
-The server will run on <b>port 3000.</b>
-
----
-
-## Database Configuration
-### **Setup MySQL**
-1. Navigate to the backend directory:  
-   ```bash
-   cd ./backend/
-2. Create a .env file with the following configuration:  
-   ```bash
-   DB_HOST=your_host (e.g., localhost)
-   DB_USER=your_username
-   DB_PASSWORD=your_password
-   DB_DATABASE=mapjourney
-Replace the placeholders with your MySQL credentials.
-
-### **Create the <i>mapjourney</i> Database**
-1. Import the `mapjourneyDB.sql` file into MySQL to configure and create the required database schema.
-
----
-
-We hope you enjoy JourneyEasyMap! If you encounter any issues, please consult the project documentation or contact the development team.
-
+✉ felipe.correa@sou.unifal-mg.edu.br
 ✉ luca.oliveira@sou.unifal-mg.edu.br<br>
-✉ guilherme.serafini@sou.unifal-mg.edu.br
+✉ guilherme.serafini@sou.unifal-mg.edu.br<br>
