@@ -29,86 +29,37 @@ body {
   display: flex;
 }
 
-.botaosavename{
-  background-color: #4caf50;
-  width: 30%;
+.botaosavename, .botaocancelname {
+  width: 45%;
   border: none;       
-  border-radius: 18px;
+  border-radius: 12px;
   color: white;
-  padding: 11px 40px;
+  padding: 12px 20px;
   text-decoration: none;
   display: inline-block;
   cursor: pointer;
-  font-size: 32px;
+  font-size: 18px;
   font-family: Inter;
   font-weight: 500;
-  align-items: right;
-  justify-content: right;
 }
 
-.botaosavename:hover{
-  background-color: #309c35;
-  width: 30%;
-  border: none;       
-  border-radius: 18px;
-  color: white;
-  padding: 11px 40px;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
-  font-size: 32px;
-  font-family: Inter;
-  font-weight: 500;
-  align-items: right;
-  justify-content: right;
-}
+.botaosavename { background-color: #4caf50; }
+.botaosavename:hover { background-color: #309c35; }
 
-.botaocancelname{
-  background-color: #e60909;
-  width: 30%;
-  border: none;       
-  border-radius: 18px;
-  color: white;
-  padding: 11px 40px;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
-  font-size: 32px;
-  font-family: Inter;
-  font-weight: 500;
-  align-items: right;
-  justify-content: right;
-}
-
-.botaocancelname:hover{
-  background-color: #bf0808;
-  width: 30%;
-  border: none;       
-  border-radius: 18px;
-  color: white;
-  padding: 11px 40px;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
-  font-size: 32px;
-  font-family: Inter;
-  font-weight: 500;
-  align-items: right;
-  justify-content: right;
-}
+.botaocancelname { background-color: #e60909; }
+.botaocancelname:hover { background-color: #bf0808; }
 
 .inputname {
   width: 100%;
-  height: 130px;
-  font-size: 25px;
-  align-items: top;
-  margin-top: 30px;
-  margin-bottom: 50px;
-  border-radius: 20px;
+  height: 60px;
+  font-size: 18px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  border-radius: 12px;
   font-family: Inter;
-  padding-top: 20px;
-  padding-left: 10px;
-  padding-bottom: 20px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  outline: none;
 }
 
 .navbar {
