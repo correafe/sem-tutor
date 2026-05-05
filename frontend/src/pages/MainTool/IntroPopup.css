@@ -1,16 +1,18 @@
 .intro-popup {
-  font-size: 20px;
+  font-size: 15px;
+  font-family: Inter, sans-serif;
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 25px;
+  right: 25px;
   background-color: white;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
   z-index: 1000;
+  color: #333;
 }
 
 .intro-popup-content {
@@ -25,7 +27,13 @@
 .intro-popup-close {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 16px;
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: 15px;
+  color: #888;
+  padding: 5px;
+}
+
+.intro-popup-close:hover {
+  color: #FF4F4F;
 }
