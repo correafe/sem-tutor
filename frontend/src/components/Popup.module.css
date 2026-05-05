@@ -1,15 +1,15 @@
 .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important; /* Modificado de 100% para 100vw para garantir cobertura total */
+    height: 100vh !important;
     background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px); /* Ajuste o valor conforme necessário */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3;
+    backdrop-filter: blur(5px);
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 99999 !important; /* Aumentado para garantir que fique acima de TUDO na página */
 }
 
 .popupinner {
