@@ -15,13 +15,20 @@
 .popupinner {
     position: relative;
     padding: 32px;
-    width: 90%; /* Ocupa boa parte em telas pequenas... */
-    max-width: 600px; /* ...mas NUNCA passa de 600px no computador */
+    width: 70%; /* Voltando para a largura original que ficava boa para você */
+    max-width: 1000px; /* Um limite bem maior para não espremer os inputs */
+    
+    /* AS TRÊS REGRAS QUE ARRUMAM A ALTURA: */
+    height: fit-content; /* Faz a caixa ter exatamente a altura do conteúdo e parar de crescer */
+    max-height: 90vh; /* Garante que, se tiver muita coisa, não ultrapasse a tela */
+    overflow-y: auto; /* Cria uma barra de rolagem interna se precisar */
+    
     background-color: #EBEBEB;
     border-radius: 27px;
-    font-size: 16px; /* Tamanho fixo para a fonte não herdar tamanhos gigantes da tela */
+    font-size: 16px; 
     font-family: Inter;
     font-weight: 500;
+    box-sizing: border-box; /* Garante que o padding não quebre as proporções */
 }
 
 .popupinner .closebtn {
