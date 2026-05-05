@@ -55,6 +55,16 @@ const Tool = ({ }) => {
 
   const handleExport = async () => {
     setLoading(true);
+
+    const exportContainer = document.getElementById('map-export-container');
+    let originalZoom = "1";
+    if (exportContainer) {
+      originalZoom = exportContainer.style.zoom;
+      exportContainer.style.zoom = 1; // Força o zoom para 100%
+      // Dá um tempo mínimo (100ms) para o navegador re-renderizar a tela sem o zoom antes da foto
+      await new Promise(resolve => setTimeout(resolve, 100)); 
+    }
+
     // console.log("entrou em handleExport");
     try {
       // Capturar a imagem do stage Konva
@@ -124,6 +134,9 @@ const Tool = ({ }) => {
     } catch (error) {
       console.error('Erro ao exportar o mapa de jornada:', error);
     } finally {
+      if (exportContainer) {
+        exportContainer.style.zoom = originalZoom;
+      }
       setLoading(false);
     }
   };
@@ -1024,7 +1037,7 @@ const Tool = ({ }) => {
 
   return (
     <div className="scrollable-container">
-      <div style={{ zoom: zoomRatio, minWidth: "100vw", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
+      <div id="map-export-container" style={{ zoom: zoomRatio, minWidth: "100vw", width: calculateTotalWidth(matrix) + 2400, height: "1000px", position: "relative" }}>
         <>
           {loading && (
             <div className="loading-overlay">
