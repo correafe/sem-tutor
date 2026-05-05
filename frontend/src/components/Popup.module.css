@@ -1,34 +1,26 @@
 .popup {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important; /* Modificado de 100% para 100vw para garantir cobertura total */
-    height: 100vh !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    z-index: 99999 !important; /* Aumentado para garantir que fique acima de TUDO na página */
+    backdrop-filter: blur(5px); /* Ajuste o valor conforme necessário */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
 }
 
 .popupinner {
     position: relative;
     padding: 32px;
-    width: 70%; /* Voltando para a largura original que ficava boa para você */
-    max-width: 1000px; /* Um limite bem maior para não espremer os inputs */
-    
-    /* AS TRÊS REGRAS QUE ARRUMAM A ALTURA: */
-    height: fit-content; /* Faz a caixa ter exatamente a altura do conteúdo e parar de crescer */
-    max-height: 90vh; /* Garante que, se tiver muita coisa, não ultrapasse a tela */
-    overflow-y: auto; /* Cria uma barra de rolagem interna se precisar */
-    
+    width: 70%;
     background-color: #EBEBEB;
     border-radius: 27px;
-    font-size: 16px; 
+    font-size: 110%;
     font-family: Inter;
     font-weight: 500;
-    box-sizing: border-box; /* Garante que o padding não quebre as proporções */
 }
 
 .popupinner .closebtn {
