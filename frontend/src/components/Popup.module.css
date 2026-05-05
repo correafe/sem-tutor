@@ -15,10 +15,11 @@
 .popupinner {
     position: relative;
     padding: 32px;
-    width: 70%;
+    width: 90%; /* Ocupa boa parte em telas pequenas... */
+    max-width: 600px; /* ...mas NUNCA passa de 600px no computador */
     background-color: #EBEBEB;
     border-radius: 27px;
-    font-size: 110%;
+    font-size: 16px; /* Tamanho fixo para a fonte não herdar tamanhos gigantes da tela */
     font-family: Inter;
     font-weight: 500;
 }
