@@ -21,5 +21,3 @@ Você pode acessar a versão adaptada **sem gamificação** diretamente pelo lin
 Esperamos que você aproveite o JourneyEasyMap! Para dúvidas ou mais informações, entre em contato com a equipe de desenvolvimento:
 
 ✉ felipe.correa@sou.unifal-mg.edu.br
-✉ luca.oliveira@sou.unifal-mg.edu.br<br>
-✉ guilherme.serafini@sou.unifal-mg.edu.br<br>
