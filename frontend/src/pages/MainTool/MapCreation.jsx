@@ -27,7 +27,9 @@ const MapCreation = () => {
   const [mapToDelete, setMapToDelete] = useState(null);
   const [mapToUpdate, setmapToUpdate] = useState(null);
   const [filterText, setFilterText] = useState('');
-  const [showIntroPopup, setShowIntroPopup] = useState(true); // State to manage the intro popup
+  const [showIntroPopup, setShowIntroPopup] = useState(() => {
+  return localStorage.getItem('hasSeenIntro') !== 'true';
+  });
 
   const mapsPerPage = 5; // Number of maps per page
 
@@ -99,6 +101,11 @@ const MapCreation = () => {
     setPickerVisible(false);
   };
 
+  const handleCloseIntro = () => {
+  setShowIntroPopup(false);
+  localStorage.setItem('hasSeenIntro', 'true');
+  };
+
   const handleClickModal = () => {
     setPickerVisible(true);
   }
@@ -115,6 +122,7 @@ const MapCreation = () => {
     await signOut(auth);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('hasSeenIntro');
     navigate('/login');
   }
 
@@ -291,7 +299,7 @@ return (
         )}
       </div>
 
-      {showIntroPopup && <IntroPopup onClose={() => setShowIntroPopup(false)} />} 
+      {showIntroPopup && <IntroPopup onClose={handleCloseIntro} />}
       
       {isPickerVisible && (
         <ModalName trigger={isPickerVisible} setTrigger={setPickerVisible}>
