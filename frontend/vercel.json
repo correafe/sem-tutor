@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://104.248.60.22:3001/:path*"
+      "destination": "https://backend-jem.onrender.com/:path*"
     },
     {
       "source": "/(.*)",
